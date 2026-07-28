@@ -1,0 +1,7 @@
+flask
+mysql-connector-python
+gunicorn
+werkzeug
+qrcode[pil]
+python-dotenv
+pillow

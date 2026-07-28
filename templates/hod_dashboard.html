@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>HOD Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+.logout-btn{
+position:absolute;
+top:20px;
+right:30px;
+background:#e74c3c;
+color:white;
+border:none;
+padding:10px 18px;
+border-radius:8px;
+cursor:pointer;
+font-weight:bold;
+text-decoration:none;
+font-size:14px;
+}
+
+.logout-btn:hover{
+background:#c0392b;
+}
+
+body{
+margin:0;
+font-family:'Segoe UI', sans-serif;
+background:linear-gradient(135deg,#0f4c81,#1e6bb8,#ff8c00);
+background-size:300% 300%;
+animation:gradientMove 10s ease infinite;
+min-height:100vh;
+position:relative;
+}
+
+@keyframes gradientMove{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+/* HEADER */
+
+.header{
+color:white;
+padding:20px 40px;
+font-size:26px;
+font-weight:bold;
+}
+
+.header span{
+font-size:14px;
+color:rgba(255,255,255,0.6);
+display:block;
+margin-top:4px;
+}
+
+/* CONTAINER */
+
+.container{
+display:flex;
+gap:30px;
+padding:30px;
+}
+
+/* LEFT PANEL */
+
+.sidebar{
+width:220px;
+min-width:220px;
+background:rgba(255,255,255,0.1);
+backdrop-filter:blur(10px);
+padding:20px;
+border-radius:12px;
+color:white;
+}
+
+.sidebar h3{
+margin-top:0;
+color:#e94560;
+}
+
+.stat{
+background:rgba(255,255,255,0.15);
+padding:12px;
+border-radius:8px;
+margin-top:10px;
+font-size:14px;
+}
+
+.stat b{
+color:#e94560;
+}
+
+/* MAIN CARD */
+
+.main{
+flex:1;
+display:flex;
+justify-content:center;
+align-items:flex-start;
+}
+
+.card{
+background:white;
+width:560px;
+max-width:100%;
+padding:35px;
+border-radius:15px;
+box-shadow:0 20px 40px rgba(0,0,0,0.25);
+}
+
+/* TITLE */
+
+.card h2{
+margin-top:0;
+text-align:center;
+color:#1a1a2e;
+}
+
+/* TEXT */
+
+.info{
+margin:12px 0;
+font-size:16px;
+color:#333;
+}
+
+/* DEPT BADGE */
+
+.dept-badge{
+display:inline-block;
+background:linear-gradient(135deg,#e94560,#c62a40);
+color:white;
+padding:4px 12px;
+border-radius:20px;
+font-size:13px;
+font-weight:bold;
+}
+
+/* BUTTONS */
+
+.buttons{
+margin-top:25px;
+text-align:center;
+}
+
+button{
+padding:12px 22px;
+border:none;
+border-radius:8px;
+font-size:15px;
+cursor:pointer;
+margin:6px;
+transition:0.3s;
+}
+
+button:hover{
+transform:scale(1.03);
+}
+
+.approve{
+background:#27ae60;
+color:white;
+}
+
+.approve:hover{
+background:#219a52;
+}
+
+.decline{
+background:#e74c3c;
+color:white;
+}
+
+.decline:hover{
+background:#c0392b;
+}
+
+/* NO REQUEST */
+
+.no-request{
+text-align:center;
+color:#888;
+padding:40px;
+font-size:18px;
+}
+
+.no-request span{
+font-size:50px;
+display:block;
+margin-bottom:15px;
+}
+
+/* REQUEST LIST */
+
+.request-list{
+margin-top:20px;
+}
+
+.request-item{
+background:#f8f9fa;
+border-left:4px solid #e94560;
+padding:15px;
+border-radius:8px;
+margin-bottom:12px;
+cursor:pointer;
+transition:0.3s;
+}
+
+.request-item:hover{
+background:#f1f1f1;
+transform:translateX(5px);
+}
+
+.request-item .name{
+font-weight:bold;
+color:#1a1a2e;
+}
+
+.request-item .meta{
+font-size:13px;
+color:#666;
+margin-top:4px;
+}
+
+.request-item .status-badge{
+display:inline-block;
+padding:2px 10px;
+border-radius:12px;
+font-size:12px;
+font-weight:bold;
+margin-top:5px;
+}
+
+.status-pending{
+background:#fff3cd;
+color:#856404;
+}
+
+.status-approved{
+background:#d4edda;
+color:#155724;
+}
+
+.status-rejected{
+background:#f8d7da;
+color:#721c24;
+}
+
+/* ===== HOURS QUOTA ===== */
+.quota-box {
+    background: rgba(255,255,255,0.1);
+    padding: 15px;
+    border-radius: 12px;
+    margin-top: 15px;
+    border: 1px solid rgba(233,69,96,0.3);
+}
+.quota-box .quota-title {
+    font-size: 13px;
+    font-weight: bold;
+    color: #e94560;
+    margin-bottom: 8px;
+}
+.quota-bar {
+    background: rgba(255,255,255,0.2);
+    border-radius: 20px;
+    height: 10px;
+    overflow: hidden;
+    margin-bottom: 6px;
+}
+.quota-bar-fill {
+    height: 100%;
+    border-radius: 20px;
+    transition: width 0.5s ease;
+}
+.quota-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: rgba(255,255,255,0.7);
+}
+
+/* ===== DURATION SELECTOR ===== */
+.duration-container {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0 15px;
+}
+.duration-option {
+    flex: 1;
+    text-align: center;
+}
+.duration-option input[type="radio"] {
+    display: none;
+}
+.duration-option label {
+    display: block;
+    padding: 12px 8px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+}
+.duration-option label:hover {
+    border-color: #e94560;
+    background: #fff0f3;
+}
+.duration-option input[type="radio"]:checked + label {
+    border-color: #e94560;
+    background: linear-gradient(135deg, #e94560, #c62a40);
+    color: white;
+    box-shadow: 0 4px 12px rgba(233, 69, 96, 0.3);
+}
+.duration-option input[type="radio"]:disabled + label {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: #f1f5f9;
+}
+.duration-option .dur-hours {
+    font-size: 24px;
+    font-weight: bold;
+    display: block;
+}
+.duration-option .dur-label {
+    font-size: 11px;
+    margin-top: 2px;
+    display: block;
+}
+
+/* Banned warning */
+.banned-warning {
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    border: 1px solid #f87171;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    color: #991b1b;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* ===== RETURN REMINDER BANNER ===== */
+.hod-reminder-banner {
+    display: none;
+    background: linear-gradient(135deg, #ff6b35, #ff4444, #ff6b35);
+    background-size: 200% 200%;
+    animation: hodReminderGlow 2s ease-in-out infinite;
+    color: white;
+    padding: 18px 20px;
+    border-radius: 14px;
+    margin-bottom: 15px;
+    text-align: center;
+    box-shadow: 0 6px 25px rgba(255, 68, 68, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+@keyframes hodReminderGlow {
+    0%, 100% { background-position: 0% 50%; box-shadow: 0 6px 25px rgba(255, 68, 68, 0.4); }
+    50% { background-position: 100% 50%; box-shadow: 0 6px 35px rgba(255, 68, 68, 0.6); }
+}
+.hod-reminder-banner::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    animation: hodReminderShine 3s ease-in-out infinite;
+}
+@keyframes hodReminderShine {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+.hod-reminder-icon {
+    font-size: 28px;
+    display: block;
+    margin-bottom: 6px;
+    animation: hodReminderBell 1s ease-in-out infinite;
+}
+@keyframes hodReminderBell {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(15deg); }
+    75% { transform: rotate(-15deg); }
+}
+.hod-reminder-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.hod-reminder-detail {
+    font-size: 13px;
+    opacity: 0.95;
+}
+.hod-reminder-countdown {
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 6px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* ===== HAMBURGER MENU ===== */
+.hamburger-btn{
+    display:none;
+    position:fixed;
+    bottom:25px;
+    left:25px;
+    z-index:1001;
+    width:56px;
+    height:56px;
+    border-radius:50%;
+    border:none;
+    background:linear-gradient(135deg,#e94560,#c62a40);
+    color:white;
+    font-size:24px;
+    cursor:pointer;
+    box-shadow:0 6px 25px rgba(233,69,96,0.5);
+    transition:all 0.3s ease;
+    align-items:center;
+    justify-content:center;
+}
+.hamburger-btn:hover{
+    transform:scale(1.1);
+    box-shadow:0 8px 30px rgba(233,69,96,0.6);
+}
+.hamburger-btn.active{
+    background:linear-gradient(135deg,#64748b,#475569);
+    box-shadow:0 6px 25px rgba(100,116,139,0.5);
+}
+
+.sidebar-overlay{
+    display:none;
+    position:fixed;
+    top:0;left:0;
+    width:100%;height:100%;
+    background:rgba(0,0,0,0.5);
+    backdrop-filter:blur(4px);
+    z-index:999;
+    opacity:0;
+    transition:opacity 0.3s ease;
+}
+.sidebar-overlay.active{
+    opacity:1;
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:1024px){
+    .hamburger-btn{
+        display:flex;
+    }
+    .sidebar{
+        position:fixed;
+        top:0;
+        left:-300px;
+        width:270px;
+        min-width:270px;
+        height:100vh;
+        z-index:1000;
+        border-radius:0 16px 16px 0;
+        padding:25px 20px;
+        overflow-y:auto;
+        transition:left 0.35s cubic-bezier(0.4,0,0.2,1);
+        background:rgba(15,76,129,0.97);
+        backdrop-filter:blur(20px);
+        box-shadow:4px 0 30px rgba(0,0,0,0.4);
+    }
+    .sidebar.open{
+        left:0;
+    }
+    .sidebar-overlay.active{
+        display:block;
+        opacity:1;
+    }
+    .container{
+        flex-direction:column;
+        padding:15px;
+        gap:15px;
+    }
+    .card{
+        width:100%;
+        padding:20px 15px;
+    }
+    .header{
+        padding:15px 20px;
+        font-size:20px;
+    }
+    .logout-btn{
+        top:12px;
+        right:15px;
+        padding:7px 14px;
+        font-size:12px;
+    }
+    .duration-container{
+        flex-direction:column;
+        gap:6px;
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity:0; transform:translateY(-20px) scale(0.95); }
+    to { opacity:1; transform:translateY(0) scale(1); }
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<!-- HAMBURGER BUTTON -->
+<button class="hamburger-btn" id="hamburgerBtn" onclick="toggleSidebar()" aria-label="Open menu">☰</button>
+<!-- SIDEBAR OVERLAY -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<a href="/logout" class="logout-btn">Logout</a>
+
+<div class="header">
+🎓 HOD Control Panel
+<span>Department: {{ hod_department }}</span>
+</div>
+
+
+<div class="container">
+
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+<h3>Dashboard</h3>
+
+<div class="stat">
+Total Requests<br>
+<b>{{ pending_requests|length }}</b>
+</div>
+
+<div class="stat">
+Pending Review<br>
+<b>{{ pending_requests|selectattr("status", "equalto", "Pending HOD")|list|length }}</b>
+</div>
+
+<div class="stat">
+Forwarded to Principal<br>
+<b>{{ pending_requests|selectattr("status", "equalto", "Pending Principal")|list|length }}</b>
+</div>
+
+<div class="stat">
+Department<br>
+<b>{{ hod_department }}</b>
+</div>
+
+<div class="stat">
+Late Warnings<br>
+<b style="color:#ff4d4d;">{{ warning_count|default(0) }}</b>
+</div>
+
+<!-- Hours Quota in Sidebar -->
+<div class="quota-box">
+    <div class="quota-title">⏱ My Exit Hours</div>
+    <div class="quota-bar">
+        {% set fill_pct = ((hod_hours_used|default(0)) / 3 * 100) %}
+        {% if fill_pct > 100 %}{% set fill_pct = 100 %}{% endif %}
+        {% if fill_pct >= 100 %}
+            {% set bar_bg = "linear-gradient(135deg,#ef4444,#dc2626)" %}
+        {% elif fill_pct >= 66 %}
+            {% set bar_bg = "linear-gradient(135deg,#f59e0b,#d97706)" %}
+        {% else %}
+            {% set bar_bg = "linear-gradient(135deg,#22c55e,#16a34a)" %}
+        {% endif %}
+        <div class="quota-bar-fill" id="hodQuotaBarFill"></div>
+        <script>
+            (function(){
+                var el = document.getElementById("hodQuotaBarFill");
+                if(el){ el.style.width = "{{ fill_pct }}%"; el.style.background = "{{ bar_bg }}"; }
+            })();
+        </script>
+    </div>
+    <div class="quota-info">
+        <span>Used: <b>{{ hod_hours_used|default(0) }}h</b></span>
+        <span>Left: <b>{{ hod_hours_remaining|default(3) }}h</b></span>
+    </div>
+</div>
+
+<div style="margin-top:20px; border-top:1px solid rgba(255,255,255,0.15); padding-top:15px;">
+<h3 style="font-size:14px; margin-bottom:10px; color:#e94560;">⚙️ Management</h3>
+<a href="/manage/faculty" style="display:block; color:white; text-decoration:none; padding:8px 12px; background:rgba(255,255,255,0.1); border-radius:8px; font-size:13px; transition:0.3s; margin-bottom:6px;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">👨‍🏫 Manage Faculty</a>
+<a href="#hodExitSection" style="display:block; color:white; text-decoration:none; padding:8px 12px; background:rgba(255,255,255,0.1); border-radius:8px; font-size:13px; transition:0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">🚪 My Exit Request</a>
+</div>
+
+</div>
+
+
+<!-- MAIN REQUEST CARD -->
+
+<div class="main">
+
+<div class="card">
+
+{% if data %}
+
+<h2>Faculty Exit Request</h2>
+
+<p class="info"><b>Name:</b> {{data.name}}</p>
+
+<p class="info"><b>Email:</b> {{data.email}}</p>
+
+<p class="info"><b>Department:</b> <span class="dept-badge">{{data.department}}</span></p>
+
+<p class="info"><b>Date:</b> {% if data.request_date %}{{ data.request_date }}{% else %}Today{% endif %}</p>
+
+<p class="info"><b>Slot:</b> {{data.slot}}</p>
+
+{% if data.duration_hours %}
+<p class="info"><b>Duration:</b> {{data.duration_hours}} hour(s)</p>
+{% endif %}
+
+<p class="info"><b>Description:</b> {{data.description}}</p>
+
+{% if data.proof %}
+<p class="info"><b>Proof:</b> 
+    <a href="/static/uploads/{{data.proof}}" target="_blank" style="color: #0077b6; text-decoration: none; font-weight: bold;">📄 View Uploaded Proof</a>
+</p>
+{% endif %}
+
+<p class="info"><b>Status:</b>
+    {% if data.status == 'Pending HOD' %}
+    <span class="status-badge status-pending">Pending HOD Review</span>
+    {% elif data.status == 'Pending Principal' %}
+    <span class="status-badge status-approved">Forwarded to Principal</span>
+    {% elif data.status == 'Approved' %}
+    <span class="status-badge status-approved">Approved</span>
+    {% elif data.status == 'Rejected by HOD' %}
+    <span class="status-badge status-rejected">Rejected</span>
+    {% endif %}
+</p>
+
+{% if data.status == 'Pending HOD' %}
+<div class="buttons">
+
+<a href="/hod_approve/{{data.id}}">
+<button class="approve">✅ Approve & Forward to Principal</button>
+</a>
+
+<button class="decline" onclick="document.getElementById('rejectModal').style.display='flex'">❌ Decline</button>
+
+</div>
+
+<!-- REJECTION REASON MODAL -->
+<div id="rejectModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:9999; justify-content:center; align-items:center;">
+    <div style="background:white; border-radius:16px; padding:30px; width:420px; max-width:90vw; box-shadow:0 20px 60px rgba(0,0,0,0.3); animation:fadeIn 0.3s ease;">
+        <h3 style="color:#c62a40; margin:0 0 5px; font-size:20px;">❌ Reject Request</h3>
+        <p style="color:#666; font-size:13px; margin-bottom:20px;">Please provide a reason for rejecting <b>{{data.name}}</b>'s exit request.</p>
+        <form method="POST" action="/hod_decline/{{data.id}}">
+            <textarea name="rejection_reason" rows="4" required placeholder="Enter rejection reason..." style="width:100%; padding:12px; border:2px solid #e0e0e0; border-radius:10px; font-family:inherit; font-size:14px; resize:vertical; box-sizing:border-box; transition:border-color 0.3s;" onfocus="this.style.borderColor='#c62a40'" onblur="this.style.borderColor='#e0e0e0'"></textarea>
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <button type="button" onclick="document.getElementById('rejectModal').style.display='none'" style="flex:1; padding:12px; background:#f1f5f9; color:#475569; border:none; border-radius:10px; font-weight:bold; cursor:pointer; font-size:14px;">Cancel</button>
+                <button type="submit" style="flex:1; padding:12px; background:linear-gradient(135deg,#e74c3c,#c0392b); color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer; font-size:14px;">Reject Request</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}
+
+{% else %}
+
+<div class="no-request">
+<span>📭</span>
+No pending requests for your department
+</div>
+
+{% endif %}
+
+<!-- ALL REQUESTS LIST -->
+{% if pending_requests|length > 0 %}
+<div class="request-list">
+<h3 style="color:#1a1a2e; margin-bottom:15px;">📋 All Department Requests</h3>
+
+{% for req in pending_requests %}
+<div class="request-item" onclick="window.location='/hod_view_request/{{req.id}}'">
+<div class="name">{{ req.name }}</div>
+<div class="meta">{{ req.email }} • {% if req.request_date %}{{ req.request_date }} • {% endif %}{{ req.slot }}</div>
+<span class="status-badge {% if req.status == 'Pending HOD' %}status-pending{% elif req.status == 'Pending Principal' or req.status == 'Approved' %}status-approved{% else %}status-rejected{% endif %}">
+    {{ req.status }}
+</span>
+</div>
+{% endfor %}
+
+</div>
+{% endif %}
+
+<!-- ===== HOD EXIT REQUEST SECTION ===== -->
+<div id="hodExitSection" style="margin-top:30px; border-top:2px solid #e94560; padding-top:25px;">
+<h2 style="color:#e94560;">🚪 My Exit Request</h2>
+<p style="color:#666; font-size:13px;">As HOD, your request goes directly to the Principal.</p>
+
+<!-- HOD STATUS -->
+{% if hod_status %}
+<div class="{% if hod_status == 'Approved' %}status-approved{% elif 'Pending' in hod_status %}status-pending{% else %}status-rejected{% endif %}"
+     style="padding:12px 18px; border-radius:10px; margin-bottom:15px; font-weight:bold;">
+    {% if hod_status == 'Approved' %}✅ Approved
+    {% elif 'Pending' in hod_status %}⏳ {{ hod_status }}
+    {% else %}❌ {{ hod_status }}{% endif %}
+</div>
+{% if hod_rejection_reason and 'Rejected' in hod_status %}
+<div style="background:linear-gradient(135deg,#fee2e2,#fecaca); border:1px solid #f87171; padding:14px 18px; border-radius:10px; margin-bottom:15px;">
+    <div style="font-weight:bold; color:#991b1b; font-size:13px; margin-bottom:5px;">📝 Rejection Reason:</div>
+    <div style="color:#7f1d1d; font-size:14px; line-height:1.5;">{{ hod_rejection_reason }}</div>
+</div>
+{% endif %}
+{% endif %}
+
+<!-- ===== RETURN REMINDER BANNER ===== -->
+<div id="hodReminderBanner" class="hod-reminder-banner">
+    <span class="hod-reminder-icon">🔔</span>
+    <div class="hod-reminder-title">⚠ Return Reminder</div>
+    <div class="hod-reminder-detail">Please return to college before your deadline!</div>
+    <div class="hod-reminder-countdown" id="hodReminderCountdown"></div>
+    <div class="hod-reminder-detail" id="hodReminderDeadline" style="margin-top:4px; font-size:12px; opacity:0.8;"></div>
+</div>
+
+<!-- TIMER -->
+<div id="hodTimerBox" style="display:none; padding:15px; border-radius:12px; text-align:center; color:white; font-size:18px; font-weight:bold; margin-bottom:15px; background:linear-gradient(135deg,#22c55e,#16a34a);">
+⏱ <span id="hodTimer"></span>
+</div>
+
+<!-- QR CODE -->
+{% if hod_pass_generated %}
+<div id="hodQrSection" style="display:none; text-align:center; padding:20px; background:#f0f8ff; border-radius:12px; margin-bottom:15px;">
+    <h4 style="color:#1a1a2e;">🎫 Your Exit Pass</h4>
+
+    <div style="display:flex; gap:20px; justify-content:center; flex-wrap:wrap; margin:15px 0;">
+        <!-- EXIT QR -->
+        <div style="text-align:center; background:linear-gradient(135deg,#fee2e2,#fecaca); padding:15px; border-radius:14px; border:2px solid #f87171; min-width:160px;">
+            <div style="font-weight:bold; color:#dc2626; font-size:14px; margin-bottom:8px;">🚪 EXIT PASS</div>
+            <img src="{{hod_qr_code}}" width="130" style="border:3px solid #f87171; border-radius:10px; box-shadow:0 4px 10px rgba(220,38,38,0.2);">
+            {% if hod_exit_scan_time %}
+            <div style="margin-top:8px; color:#16a34a; font-size:12px; font-weight:bold;">✅ Scanned: {{ hod_exit_scan_time.strftime('%d %b %I:%M %p') }}</div>
+            {% else %}
+            <div style="margin-top:8px; color:#9ca3af; font-size:11px;">⏳ Not yet scanned</div>
+            {% endif %}
+            <a href="/download_pass"><button type="button" style="background:#dc2626; font-size:12px; padding:6px 12px; margin-top:8px; width:auto; border:none; border-radius:8px; color:white; font-weight:bold; cursor:pointer;">⬇ Download</button></a>
+        </div>
+
+        <!-- ENTRY QR -->
+        {% if hod_exit_scan_time %}
+        <div style="text-align:center; background:linear-gradient(135deg,#dcfce7,#bbf7d0); padding:15px; border-radius:14px; border:2px solid #4ade80; min-width:160px;">
+            <div style="font-weight:bold; color:#16a34a; font-size:14px; margin-bottom:8px;">🏫 ENTRY PASS</div>
+            <img src="{{hod_qr_code_entry}}" width="130" style="border:3px solid #4ade80; border-radius:10px; box-shadow:0 4px 10px rgba(74,222,128,0.2);">
+            {% if hod_entry_scan_time %}
+            <div style="margin-top:8px; color:#16a34a; font-size:12px; font-weight:bold;">✅ Returned: {{ hod_entry_scan_time.strftime('%d %b %I:%M %p') }}</div>
+            {% else %}
+            <div style="margin-top:8px; color:#eab308; font-size:11px; font-weight:bold;">⏳ Pending return scan</div>
+            {% endif %}
+            <a href="/download_pass_entry"><button type="button" style="background:#16a34a; font-size:12px; padding:6px 12px; margin-top:8px; width:auto; border:none; border-radius:8px; color:white; font-weight:bold; cursor:pointer;">⬇ Download</button></a>
+        </div>
+        {% else %}
+        <div style="text-align:center; background:#f3f4f6; padding:15px; border-radius:14px; border:2px dashed #9ca3af; min-width:160px; display:flex; align-items:center; justify-content:center; color:#6b7280; font-size:12px; font-weight:bold;">
+            🔒 Scan EXIT to unlock <br>ENTRY PASS
+        </div>
+        {% endif %}
+    </div>
+</div>
+<div id="hodQrLocked" style="display:none; padding:12px; background:#fff3cd; color:#856404; border-radius:10px; text-align:center; font-weight:bold; margin-bottom:15px;">
+    🔒 QR Code will unlock 10 minutes before your slot
+</div>
+{% endif %}
+
+<!-- EXIT REQUEST FORM -->
+{% if not hod_banned %}
+<form method="POST" enctype="multipart/form-data" style="margin-top:15px;">
+
+<label style="font-weight:bold; color:#333; display:block; margin-bottom:5px;">Description</label>
+<textarea name="description" rows="3" required style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd; font-family:inherit; resize:vertical;" placeholder="Reason for exit..."></textarea>
+
+<label style="font-weight:bold; color:#333; display:block; margin:12px 0 5px;">Upload Proof (Optional)</label>
+<input type="file" name="proof" accept=".pdf, image/png, image/jpeg, image/jpg" style="width:100%; padding:8px;">
+
+<label style="font-weight:bold; color:#333; display:block; margin:12px 0 5px;">Select Date</label>
+<input type="date" name="request_date" id="hod_request_date" required style="width:100%; padding:10px; border-radius:8px; border:1px solid #ddd;">
+
+<label style="font-weight:bold; color:#333; display:block; margin:12px 0 5px;">Out Time</label>
+<input type="time" name="out_time" id="hod_out_time" required min="08:00" max="17:00" style="width:100%; padding:12px; border-radius:8px; border:1px solid #ddd; font-size:16px;">
+
+<label style="font-weight:bold; color:#333; display:block; margin:12px 0 5px;">Duration (Hours)</label>
+<div class="duration-container">
+    <div class="duration-option">
+        <input type="radio" name="duration_hours" value="1" id="hd1" {% if hod_hours_remaining|default(3) >= 1 %}{% else %}disabled{% endif %} checked>
+        <label for="hd1">
+            <span class="dur-hours">1</span>
+            <span class="dur-label">Hour</span>
+        </label>
+    </div>
+    <div class="duration-option">
+        <input type="radio" name="duration_hours" value="2" id="hd2" {% if hod_hours_remaining|default(3) >= 2 %}{% else %}disabled{% endif %}>
+        <label for="hd2">
+            <span class="dur-hours">2</span>
+            <span class="dur-label">Hours</span>
+        </label>
+    </div>
+    <div class="duration-option">
+        <input type="radio" name="duration_hours" value="3" id="hd3" {% if hod_hours_remaining|default(3) >= 3 %}{% else %}disabled{% endif %}>
+        <label for="hd3">
+            <span class="dur-hours">3</span>
+            <span class="dur-label">Hours</span>
+        </label>
+    </div>
+</div>
+
+<button type="submit" style="width:100%; padding:14px; background:linear-gradient(135deg,#e94560,#c0392b); color:white; border:none; border-radius:10px; font-size:16px; font-weight:bold; cursor:pointer; transition:0.3s;">🚀 Send Request to Principal</button>
+</form>
+{% else %}
+<div class="banned-warning">
+    🚫 You have used all 3 exit hours for this month.<br>
+    <span style="font-weight:normal; font-size:13px;">Your quota resets on the 1st of next month.</span>
+</div>
+{% endif %}
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+// ===== HOD COUNTDOWN TIMER =====
+var hodDeadline = "{{hod_deadline}}";
+var hodSlotStart = "{{hod_slot_start}}";
+
+if(hodDeadline && hodDeadline !== "None"){
+    document.getElementById("hodTimerBox").style.display = "block";
+    var hodEnd = new Date(hodDeadline).getTime();
+    var hodStart = (hodSlotStart && hodSlotStart !== "None") ? new Date(hodSlotStart).getTime() : null;
+
+    var hodInterval = setInterval(function(){
+        var now = new Date().getTime();
+
+        if(hodStart && now < hodStart){
+            var waitDiff = hodStart - now;
+            var wh = Math.floor(waitDiff / (1000*60*60));
+            var wm = Math.floor((waitDiff % (1000*60*60)) / (1000*60));
+            var ws = Math.floor((waitDiff % (1000*60)) / 1000);
+            document.getElementById("hodTimerBox").style.background = "linear-gradient(135deg,#f59e0b,#d97706)";
+            document.getElementById("hodTimer").innerHTML = "⏳ Slot starts in " + wh + "h " + wm + "m " + ws + "s";
+            return;
+        }
+
+        var diff = hodEnd - now;
+        if(diff <= 0){
+            document.getElementById("hodTimerBox").style.background = "linear-gradient(135deg,#ef4444,#dc2626)";
+            document.getElementById("hodTimer").innerHTML = "⚠ Time Over";
+            clearInterval(hodInterval);
+            return;
+        }
+
+        document.getElementById("hodTimerBox").style.background = "linear-gradient(135deg,#22c55e,#16a34a)";
+        var h = Math.floor(diff / (1000*60*60));
+        var m = Math.floor((diff % (1000*60*60)) / (1000*60));
+        var s = Math.floor((diff % (1000*60)) / 1000);
+        document.getElementById("hodTimer").innerHTML = "⏱ Time Remaining: " + h + "h " + m + "m " + s + "s";
+    }, 1000);
+}
+
+// ===== HOD QR CODE VISIBILITY (10 min before slot) =====
+(function() {
+    var qrSection = document.getElementById("hodQrSection");
+    var qrLocked = document.getElementById("hodQrLocked");
+    if (!qrSection) return;
+
+    var slotStartStr = hodSlotStart;
+    if (!slotStartStr || slotStartStr === "None") {
+        qrSection.style.display = "block";
+        return;
+    }
+
+    var slotStartTime = new Date(slotStartStr).getTime();
+    var validFrom = slotStartTime - (10 * 60 * 1000);
+
+    function checkQR() {
+        var now = new Date().getTime();
+        if (now >= validFrom) {
+            qrSection.style.display = "block";
+            if (qrLocked) qrLocked.style.display = "none";
+        } else {
+            qrSection.style.display = "none";
+            if (qrLocked) qrLocked.style.display = "block";
+        }
+    }
+    checkQR();
+    setInterval(checkQR, 1000);
+})();
+
+// ===== HOD DATE BOUNDS & DYNAMIC TIME VALIDATION =====
+(function() {
+    var dateInput = document.getElementById("hod_request_date");
+    var timeInput = document.getElementById("hod_out_time");
+    var form = document.querySelector('#hodExitSection form[method="POST"]');
+    var durationRadios = form ? form.querySelectorAll('input[name="duration_hours"]') : [];
+
+    if(dateInput) {
+        var today = new Date();
+        var maxDate = new Date();
+        maxDate.setDate(today.getDate() + 5);
+
+        var tzOffset = today.getTimezoneOffset() * 60000;
+        var todayStr = (new Date(today - tzOffset)).toISOString().split('T')[0];
+        var maxStr = (new Date(maxDate - tzOffset)).toISOString().split('T')[0];
+
+        dateInput.setAttribute("min", todayStr);
+        dateInput.setAttribute("max", maxStr);
+        dateInput.value = todayStr;
+    }
+
+    function updateTimeBounds() {
+        if (!timeInput || !dateInput) return;
+
+        var now = new Date();
+        var selectedDate = dateInput.value;
+        var tzOffset = now.getTimezoneOffset() * 60000;
+        var todayStr = (new Date(now - tzOffset)).toISOString().split('T')[0];
+        var isToday = (selectedDate === todayStr);
+
+        if (isToday) {
+            var currentHour = now.getHours();
+            var currentMin = now.getMinutes();
+            var minTime = (currentHour < 10 ? '0' : '') + currentHour + ':' + (currentMin < 10 ? '0' : '') + currentMin;
+            if (currentHour < 8) minTime = '08:00';
+            timeInput.setAttribute('min', minTime);
+        } else {
+            timeInput.setAttribute('min', '08:00');
+        }
+
+        var duration = 1;
+        durationRadios.forEach(function(r) { if (r.checked) duration = parseInt(r.value); });
+        var maxHour = 16 - duration; // 4 PM is 16:00
+        var maxTime = (maxHour < 10 ? '0' : '') + maxHour + ':00';
+        timeInput.setAttribute('max', maxTime);
+
+        if (timeInput.value && timeInput.value < timeInput.getAttribute('min')) {
+            timeInput.value = '';
+        }
+    }
+
+    if (dateInput) dateInput.addEventListener('change', updateTimeBounds);
+    durationRadios.forEach(function(r) { r.addEventListener('change', updateTimeBounds); });
+    updateTimeBounds();
+    setInterval(function() { updateTimeBounds(); }, 60000);
+
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            if (!timeInput || !timeInput.value) return;
+
+            var duration = 1;
+            durationRadios.forEach(function(r) { if (r.checked) duration = parseInt(r.value); });
+            var timeParts = timeInput.value.split(':');
+            var hours = parseInt(timeParts[0]);
+            var mins = parseInt(timeParts[1]);
+            var totalMins = hours * 60 + mins;
+
+            if (totalMins < 480) {
+                e.preventDefault();
+                alert('Out time must be after 8:00 AM (college hours).');
+                return;
+            }
+            if (totalMins + (duration * 60) > 960) { // 960 mins = 16:00 = 4 PM
+                var maxHour = 16 - duration;
+                var maxAmPm = maxHour >= 12 ? 'PM' : 'AM';
+                var maxDisp = (maxHour > 12 ? maxHour - 12 : maxHour) + ':00 ' + maxAmPm;
+                e.preventDefault();
+                alert('With ' + duration + ' hour(s) duration, out time cannot be later than ' + maxDisp + ' (must return by 4:00 PM).');
+                return;
+            }
+
+            var selectedDate = dateInput ? dateInput.value : '';
+            var now = new Date();
+            var tzOffset = now.getTimezoneOffset() * 60000;
+            var todayStr = (new Date(now - tzOffset)).toISOString().split('T')[0];
+            
+            if (selectedDate === todayStr) {
+                var currentTotalMins = now.getHours() * 60 + now.getMinutes();
+                if (totalMins < currentTotalMins) {
+                    e.preventDefault();
+                    alert('For today, you cannot select a past time.');
+                    return;
+                }
+            }
+
+            // AM/PM conversion is now handled on the server side
+        });
+    }
+})();
+// ===== HOD RETURN REMINDER POLLING =====
+(function() {
+    var banner = document.getElementById("hodReminderBanner");
+    var countdownEl = document.getElementById("hodReminderCountdown");
+    var deadlineEl = document.getElementById("hodReminderDeadline");
+    if (!banner) return;
+
+    var reminderDeadlineTime = null;
+    var reminderActive = false;
+
+    function updateReminderCountdown() {
+        if (!reminderActive || !reminderDeadlineTime) return;
+        var now = new Date().getTime();
+        var diff = reminderDeadlineTime - now;
+        if (diff <= 0) {
+            countdownEl.textContent = "⚠ DEADLINE PASSED!";
+            return;
+        }
+        var mins = Math.floor(diff / (1000 * 60));
+        var secs = Math.floor((diff % (1000 * 60)) / 1000);
+        countdownEl.textContent = "⏰ " + mins + "m " + secs + "s remaining";
+    }
+
+    function checkReminder() {
+        fetch("/api/check_reminder")
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.reminder) {
+                    banner.style.display = "block";
+                    reminderActive = true;
+                    deadlineEl.textContent = "Deadline: " + data.deadline_full;
+                    reminderDeadlineTime = new Date().getTime() + (data.minutes_left * 60 * 1000);
+                    updateReminderCountdown();
+                } else {
+                    banner.style.display = "none";
+                    reminderActive = false;
+                }
+            })
+            .catch(function(err) {
+                console.log("Reminder check failed:", err);
+            });
+    }
+
+    checkReminder();
+    setInterval(checkReminder, 15000);
+    setInterval(updateReminderCountdown, 1000);
+})();
+
+// ===== HAMBURGER SIDEBAR TOGGLE =====
+function toggleSidebar() {
+    var sidebar = document.querySelector('.sidebar');
+    var overlay = document.getElementById('sidebarOverlay');
+    var btn = document.getElementById('hamburgerBtn');
+    var isOpen = sidebar.classList.contains('open');
+
+    if (isOpen) {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('active');
+        btn.classList.remove('active');
+        btn.innerHTML = '☰';
+        setTimeout(function(){ overlay.style.display = 'none'; }, 300);
+    } else {
+        overlay.style.display = 'block';
+        // Force reflow before adding active class for transition
+        overlay.offsetHeight;
+        sidebar.classList.add('open');
+        overlay.classList.add('active');
+        btn.classList.add('active');
+        btn.innerHTML = '✕';
+    }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>OTP Verification</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Segoe UI;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(135deg,#ff7a00,#ffb347);
+}
+
+.card{
+background:white;
+padding:40px;
+border-radius:20px;
+text-align:center;
+width:300px;
+box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
+
+input{
+padding:10px;
+width:80%;
+margin:10px;
+border-radius:10px;
+border:1px solid #ccc;
+}
+
+button{
+padding:10px 20px;
+border:none;
+border-radius:10px;
+background:#ff7a00;
+color:white;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="card">
+
+<h2>Enter OTP</h2>
+
+<form method="POST" action="/security_otp">
+
+    {% if error %}
+    <p style="color:red;">{{error}}</p>
+    {% endif %}
+
+    <input type="text" name="otp" placeholder="Enter OTP" required>
+    <br><br>
+
+    <button type="submit">Verify</button>
+
+</form>
+
+</div>
+
+</body>
+</html>

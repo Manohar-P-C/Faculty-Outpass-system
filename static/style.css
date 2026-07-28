@@ -1,0 +1,132 @@
+body{
+margin:0;
+font-family:Arial, Helvetica, sans-serif;
+height:100vh;
+
+background: linear-gradient(120deg,#0f4c81,#1e6bb8,#ff8c00);
+
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+/* MAIN CARD */
+
+.login-card{
+
+width:420px;
+
+background:white;
+
+padding:40px;
+
+border-radius:20px;
+
+box-shadow:0px 15px 40px rgba(0,0,0,0.35);
+
+text-align:center;
+
+}
+
+/* LOGO */
+
+.logo{
+
+width:100px;
+margin-bottom:10px;
+
+}
+
+/* TITLE */
+
+h1{
+
+color:#0f4c81;
+
+font-size:26px;
+
+margin-bottom:5px;
+
+}
+
+/* SUBTITLE */
+
+.subtitle{
+
+color:#666;
+
+margin-bottom:30px;
+
+}
+
+/* BUTTON GROUP */
+
+.buttons{
+
+display:flex;
+
+flex-direction:column;
+
+gap:15px;
+
+}
+
+/* BUTTON STYLE */
+
+.btn{
+
+padding:14px;
+
+font-size:16px;
+
+border:none;
+
+border-radius:12px;
+
+cursor:pointer;
+
+transition:0.3s;
+
+font-weight:600;
+
+}
+
+/* BUTTON HOVER */
+
+.btn:hover{
+
+transform:scale(1.06);
+
+box-shadow:0px 6px 15px rgba(0,0,0,0.3);
+
+}
+
+/* PRINCIPAL */
+
+.principal{
+
+background:linear-gradient(45deg,#ff8c00,#ff5e00);
+
+color:white;
+
+}
+
+/* FACULTY */
+
+.faculty{
+
+background:linear-gradient(45deg,#1e6bb8,#0f4c81);
+
+color:white;
+
+}
+
+/* SECURITY */
+
+.security{
+
+background:linear-gradient(45deg,#2ecc71,#27ae60);
+
+color:white;
+
+}

@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Security Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+
+body{
+    font-family:'Inter',sans-serif;
+    background:linear-gradient(135deg,#0f4c81,#1e6bb8,#ff8c00);
+    background-size:300% 300%;
+    animation:gradientMove 10s ease infinite;
+    color:#e2e8f0;
+    min-height:100vh;
+    padding:20px;
+    position:relative;
+}
+
+@keyframes gradientMove{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+/* Top Bar */
+.top-bar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+.top-bar h1{
+    font-size:22px;
+    font-weight:800;
+    background:linear-gradient(135deg,#ef4444,#f97316);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    letter-spacing:-0.5px;
+}
+.top-bar-actions{display:flex;gap:12px;align-items:center;}
+.btn{
+    padding:8px 18px;
+    border:none;
+    border-radius:10px;
+    font-weight:600;
+    font-size:13px;
+    cursor:pointer;
+    text-decoration:none;
+    transition:all 0.2s ease;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+}
+.btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.3);}
+.btn-history{background:linear-gradient(135deg,#6366f1,#8b5cf6);color:white;}
+.btn-logout{background:linear-gradient(135deg,#ef4444,#dc2626);color:white;}
+
+/* Scanner Mode Tabs */
+.scanner-tabs{
+    display:flex;
+    gap:0;
+    margin-bottom:20px;
+    border-radius:16px;
+    overflow:hidden;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.1);
+}
+.scanner-tab{
+    flex:1;
+    padding:16px 20px;
+    text-align:center;
+    cursor:pointer;
+    font-weight:700;
+    font-size:15px;
+    transition:all 0.3s ease;
+    border:none;
+    background:transparent;
+    color:#94a3b8;
+}
+.scanner-tab.active-exit{
+    background:linear-gradient(135deg,#ef4444,#dc2626);
+    color:white;
+    box-shadow:0 4px 20px rgba(239,68,68,0.3);
+}
+.scanner-tab.active-entry{
+    background:linear-gradient(135deg,#22c55e,#16a34a);
+    color:white;
+    box-shadow:0 4px 20px rgba(34,197,94,0.3);
+}
+.scanner-tab:hover:not(.active-exit):not(.active-entry){
+    background:rgba(255,255,255,0.08);
+    color:#e2e8f0;
+}
+
+/* Main Grid */
+.main-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:20px;
+}
+@media(max-width:1000px){
+    .main-grid{grid-template-columns:1fr;}
+}
+@media(max-width:600px){
+    body{padding:12px;}
+    .top-bar{flex-direction:column;gap:10px;align-items:flex-start;}
+    .top-bar h1{font-size:18px;}
+    .scanner-tab{padding:12px 10px;font-size:13px;}
+}
+
+/* Cards */
+.card{
+    background:rgba(255,255,255,0.05);
+    backdrop-filter:blur(10px);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:16px;
+    padding:20px;
+    box-shadow:0 8px 32px rgba(0,0,0,0.2);
+}
+.card h2{
+    font-size:16px;
+    font-weight:700;
+    margin-bottom:15px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+.card-overdue h2{color:#ef4444;}
+.card-safe h2{color:#22c55e;}
+.card-scanner h2{color:#60a5fa;}
+
+/* Faculty Items */
+.faculty-item{
+    padding:12px;
+    margin-bottom:10px;
+    border-radius:10px;
+    font-size:13px;
+    line-height:1.6;
+}
+.faculty-item b{font-size:14px;}
+.item-overdue{
+    background:linear-gradient(135deg,rgba(239,68,68,0.15),rgba(220,38,38,0.1));
+    border:1px solid rgba(239,68,68,0.3);
+}
+.item-safe{
+    background:linear-gradient(135deg,rgba(34,197,94,0.15),rgba(22,163,74,0.1));
+    border:1px solid rgba(34,197,94,0.3);
+}
+.badge{
+    display:inline-block;
+    padding:2px 8px;
+    border-radius:6px;
+    font-size:11px;
+    font-weight:700;
+}
+.badge-overdue{background:rgba(239,68,68,0.2);color:#ef4444;border:1px solid rgba(239,68,68,0.3);}
+.badge-safe{background:rgba(34,197,94,0.2);color:#22c55e;border:1px solid rgba(34,197,94,0.3);}
+.badge-scanned{background:rgba(99,102,241,0.2);color:#a5b4fc;border:1px solid rgba(99,102,241,0.3);}
+
+.empty-state{
+    text-align:center;
+    padding:30px;
+    color:#64748b;
+    font-size:14px;
+}
+
+/* Scanner */
+#reader{
+    width:100%;
+    border-radius:12px;
+    overflow:hidden;
+    margin:0 auto;
+}
+#scanResult{
+    display:none;
+    margin-top:20px;
+    padding:18px;
+    border-radius:12px;
+    text-align:left;
+}
+.scan-result-exit{
+    background:linear-gradient(135deg,rgba(239,68,68,0.1),rgba(220,38,38,0.05));
+    border:1px solid rgba(239,68,68,0.3);
+}
+.scan-result-entry{
+    background:linear-gradient(135deg,rgba(34,197,94,0.1),rgba(22,163,74,0.05));
+    border:1px solid rgba(34,197,94,0.3);
+}
+.scan-result-error{
+    background:rgba(239,68,68,0.1);
+    border:1px solid rgba(239,68,68,0.3);
+}
+.scan-result-warn{
+    background:rgba(245,158,11,0.1);
+    border:1px solid rgba(245,158,11,0.3);
+}
+
+.scan-btn{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    font-weight:600;
+    font-size:14px;
+    cursor:pointer;
+    margin-top:12px;
+    transition:all 0.2s ease;
+}
+.scan-btn:hover{transform:translateY(-1px);}
+.scan-btn-exit{background:linear-gradient(135deg,#ef4444,#dc2626);color:white;}
+.scan-btn-entry{background:linear-gradient(135deg,#22c55e,#16a34a);color:white;}
+
+/* Active scanner mode indicator */
+.scanner-mode-label{
+    text-align:center;
+    padding:10px;
+    border-radius:10px;
+    font-weight:700;
+    font-size:14px;
+    margin-bottom:15px;
+}
+.mode-exit{
+    background:linear-gradient(135deg,rgba(239,68,68,0.15),rgba(220,38,38,0.1));
+    color:#ef4444;
+    border:1px solid rgba(239,68,68,0.3);
+}
+.mode-entry{
+    background:linear-gradient(135deg,rgba(34,197,94,0.15),rgba(22,163,74,0.1));
+    color:#22c55e;
+    border:1px solid rgba(34,197,94,0.3);
+}
+
+/* Pulse animation */
+@keyframes pulse{
+    0%,100%{opacity:1;}
+    50%{opacity:0.5;}
+}
+.pulse{animation:pulse 2s infinite;}
+</style>
+</head>
+
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+    <h1>🚨 SECURITY MONITORING</h1>
+    <div class="top-bar-actions">
+        <a href="/security_history" class="btn btn-history">📋 History</a>
+        <a href="/logout" class="btn btn-logout">Logout</a>
+    </div>
+</div>
+
+<!-- SCANNER MODE TABS -->
+<div class="scanner-tabs">
+    <button class="scanner-tab active-exit" id="tabExit" onclick="switchMode('exit')">🚪 EXIT SCANNER</button>
+    <button class="scanner-tab" id="tabEntry" onclick="switchMode('entry')">🏫 ENTRY SCANNER</button>
+</div>
+
+<div class="main-grid">
+
+<!-- OVERDUE -->
+<div class="card card-overdue">
+    <h2>⚠️ Overdue Faculty</h2>
+    {% if alerts %}
+        {% for f in alerts %}
+        <div class="faculty-item item-overdue">
+            <b>{{f.name}}</b><br>
+            {{f.email}}<br>
+            Slot: {{f.slot}}<br>
+            <span class="badge badge-overdue">❌ OVERDUE</span>
+            {% if f.exit_scan_time %}
+            <br><span class="badge badge-scanned">🚪 Out: {{ f.exit_scan_time.strftime('%I:%M %p') }}</span>
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">✅ No overdue faculty</div>
+    {% endif %}
+</div>
+
+<!-- SAFE / ON TIME -->
+<div class="card card-safe">
+    <h2>✅ Active Faculty</h2>
+    {% if safe %}
+        {% for f in safe %}
+        <div class="faculty-item item-safe">
+            <b>{{f.name}}</b><br>
+            {{f.email}}<br>
+            Slot: {{f.slot}}<br>
+            <span class="badge badge-safe">✔ ON TIME</span>
+            {% if f.exit_scan_time %}
+            <br><span class="badge badge-scanned">🚪 Out: {{ f.exit_scan_time.strftime('%I:%M %p') }}</span>
+            {% endif %}
+            {% if f.entry_scan_time %}
+            <span class="badge badge-scanned">🏫 In: {{ f.entry_scan_time.strftime('%I:%M %p') }}</span>
+            {% endif %}
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-state">No active faculty passes</div>
+    {% endif %}
+</div>
+
+<!-- QR SCANNER -->
+<div class="card card-scanner" style="text-align:center;">
+    <h2>🔍 QR Scanner</h2>
+
+    <div class="scanner-mode-label mode-exit" id="modeLabel">
+        <span class="pulse">●</span> EXIT MODE — Scan outgoing faculty
+    </div>
+
+    <div id="reader"></div>
+
+    <div id="scanResult">
+        <h3 id="scanResultTitle" style="margin:0 0 10px 0; text-align:center; font-size:16px;"></h3>
+        <p id="resultText" style="font-size:14px; line-height:1.7;"></p>
+        <button onclick="restartScanner()" class="scan-btn scan-btn-exit" id="scanAgainBtn">🔄 Scan Another</button>
+    </div>
+</div>
+
+</div>
+
+<!-- JAVASCRIPT QR SCANNER -->
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<script>
+    let currentMode = 'exit'; // 'exit' or 'entry'
+    let html5QrCode = null;
+    let isScanning = false;
+
+    function switchMode(mode) {
+        currentMode = mode;
+        const tabExit = document.getElementById('tabExit');
+        const tabEntry = document.getElementById('tabEntry');
+        const modeLabel = document.getElementById('modeLabel');
+        const scanAgainBtn = document.getElementById('scanAgainBtn');
+
+        tabExit.className = 'scanner-tab' + (mode === 'exit' ? ' active-exit' : '');
+        tabEntry.className = 'scanner-tab' + (mode === 'entry' ? ' active-entry' : '');
+
+        if (mode === 'exit') {
+            modeLabel.className = 'scanner-mode-label mode-exit';
+            modeLabel.innerHTML = '<span class="pulse">●</span> EXIT MODE — Scan outgoing faculty';
+            scanAgainBtn.className = 'scan-btn scan-btn-exit';
+        } else {
+            modeLabel.className = 'scanner-mode-label mode-entry';
+            modeLabel.innerHTML = '<span class="pulse">●</span> ENTRY MODE — Scan returning faculty';
+            scanAgainBtn.className = 'scan-btn scan-btn-entry';
+        }
+
+        // Hide result and restart scanner
+        document.getElementById('scanResult').style.display = 'none';
+        document.getElementById('reader').style.display = 'block';
+        restartScanner();
+    }
+
+    function onScanSuccess(decodedText, decodedResult) {
+        if (!isScanning) return;
+        isScanning = false;
+
+        html5QrCode.stop().then(() => {
+            document.getElementById("reader").style.display = "none";
+
+            // Parse the QR data: format is "EXIT-<id>" or "ENTRY-<id>"
+            let scanType = '';
+            let reqId = decodedText;
+
+            if (decodedText.startsWith('EXIT-')) {
+                scanType = 'exit';
+                reqId = decodedText.substring(5);
+            } else if (decodedText.startsWith('ENTRY-')) {
+                scanType = 'entry';
+                reqId = decodedText.substring(6);
+            } else {
+                // Legacy QR without prefix — treat based on current mode
+                scanType = currentMode;
+            }
+
+            // Validate scan type matches current mode
+            if (scanType !== currentMode) {
+                showResult('wrong_mode', {
+                    message: `Wrong QR! You scanned an ${scanType.toUpperCase()} QR but the scanner is in ${currentMode.toUpperCase()} mode. Please switch modes or scan the correct QR.`
+                });
+                return;
+            }
+
+            // Call the appropriate API
+            const apiUrl = currentMode === 'exit'
+                ? '/api/scan_exit/' + reqId
+                : '/api/scan_entry/' + reqId;
+
+            fetch(apiUrl)
+                .then(r => r.json())
+                .then(data => showResult(data.status, data))
+                .catch(err => showResult('error', {message: 'Network error. Please try again.'}));
+
+        }).catch(err => console.error("Stop failed", err));
+    }
+
+    function showResult(status, data) {
+        const resDiv = document.getElementById("scanResult");
+        const resText = document.getElementById("resultText");
+        const resTitle = document.getElementById("scanResultTitle");
+        resDiv.style.display = "block";
+
+        // Reset classes
+        resDiv.className = '';
+
+        if (status === 'success') {
+            let typeLabel = data.scan_type === 'EXIT' ? '🚪 EXIT RECORDED' : '🏫 ENTRY RECORDED';
+            let color = data.time_status === 'ON TIME' ? '#22c55e' : '#ef4444';
+            resDiv.className = data.scan_type === 'EXIT' ? 'scan-result-exit' : 'scan-result-entry';
+            resTitle.style.color = data.scan_type === 'EXIT' ? '#ef4444' : '#22c55e';
+            resTitle.textContent = typeLabel;
+            resText.innerHTML = `
+                <b>Name:</b> ${data.name}<br>
+                <b>Email:</b> ${data.email}<br>
+                <b>Dept:</b> ${data.department}<br>
+                <b>Slot:</b> ${data.slot}<br>
+                <b>Scan Time:</b> ${data.scan_time}<br>
+                <b>Status:</b> <span style="color:${color}; border:1px solid ${color}; padding:2px 8px; border-radius:6px; font-weight:bold; font-size:12px;">${data.time_status}</span>
+            `;
+        } else if (status === 'already') {
+            resDiv.className = 'scan-result-warn';
+            resTitle.style.color = '#f59e0b';
+            resTitle.textContent = '⚠️ Already Scanned';
+            resText.innerHTML = `
+                <span style="color:#f59e0b; font-weight:bold;">${data.message}</span><br>
+                ${data.name ? '<b>Name:</b> ' + data.name + '<br>' : ''}
+                ${data.department ? '<b>Dept:</b> ' + data.department : ''}
+            `;
+        } else if (status === 'wrong_mode') {
+            resDiv.className = 'scan-result-warn';
+            resTitle.style.color = '#f59e0b';
+            resTitle.textContent = '⚠️ Wrong Scanner Mode';
+            resText.innerHTML = `<span style="color:#f59e0b;">${data.message}</span>`;
+        } else {
+            resDiv.className = 'scan-result-error';
+            resTitle.style.color = '#ef4444';
+            resTitle.textContent = '❌ Error';
+            resText.innerHTML = `<span style="color:#ef4444; font-weight:bold;">${data.message}</span>`;
+        }
+    }
+
+    function restartScanner() {
+        document.getElementById('scanResult').style.display = 'none';
+        document.getElementById('reader').style.display = 'block';
+
+        if (html5QrCode) {
+            html5QrCode.stop().catch(() => {}).finally(() => startScanner());
+        } else {
+            startScanner();
+        }
+    }
+
+    function startScanner() {
+        html5QrCode = new Html5Qrcode("reader");
+        isScanning = true;
+
+        Html5Qrcode.getCameras().then(devices => {
+            if (devices && devices.length) {
+                html5QrCode.start(
+                    devices[0].id,
+                    { fps: 10, qrbox: {width: 250, height: 250} },
+                    onScanSuccess
+                ).catch(err => console.log(err));
+            } else {
+                document.getElementById("reader").innerHTML = "<p style='padding:20px;'>No camera found. Please attach a camera.</p>";
+            }
+        }).catch(err => {
+            console.error("Camera access error:", err);
+            document.getElementById("reader").innerHTML = "<p style='padding:20px;'>Error accessing camera. Check permissions.</p>";
+        });
+    }
+
+    // Start scanner on load
+    setTimeout(startScanner, 500);
+</script>
+
+</body>
+</html>

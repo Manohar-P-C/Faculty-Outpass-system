@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Manage Email Templates</title>
+<style>
+
+body{
+margin:0;
+font-family:Segoe UI;
+background:linear-gradient(135deg,#1e3c72,#2a5298);
+min-height:100vh;
+}
+
+.header{
+color:white;
+padding:20px 40px;
+font-size:26px;
+font-weight:bold;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.back-btn{
+background:rgba(255,255,255,0.15);
+color:white;
+border:none;
+padding:10px 20px;
+border-radius:8px;
+cursor:pointer;
+font-weight:bold;
+text-decoration:none;
+font-size:14px;
+transition:0.3s;
+}
+
+.back-btn:hover{
+background:rgba(255,255,255,0.3);
+}
+
+.container{
+max-width:900px;
+margin:0 auto;
+padding:0 30px 40px;
+}
+
+/* Template Cards */
+
+.template-card{
+background:white;
+border-radius:15px;
+box-shadow:0 10px 30px rgba(0,0,0,0.2);
+margin-bottom:25px;
+overflow:hidden;
+transition:0.3s;
+}
+
+.template-card:hover{
+box-shadow:0 15px 40px rgba(0,0,0,0.3);
+transform:translateY(-2px);
+}
+
+.card-header{
+background:linear-gradient(135deg,#2a5298,#1e3c72);
+color:white;
+padding:18px 25px;
+cursor:pointer;
+display:flex;
+justify-content:space-between;
+align-items:center;
+user-select:none;
+}
+
+.card-header h3{
+margin:0;
+font-size:17px;
+}
+
+.card-header .desc{
+font-size:12px;
+opacity:0.8;
+margin-top:4px;
+}
+
+.card-header .toggle-icon{
+font-size:20px;
+transition:0.3s;
+}
+
+.card-header .toggle-icon.open{
+transform:rotate(180deg);
+}
+
+.card-body{
+padding:25px;
+display:none;
+}
+
+.card-body.show{
+display:block;
+}
+
+/* Form */
+
+label{
+display:block;
+font-weight:bold;
+margin-top:18px;
+margin-bottom:6px;
+color:#333;
+font-size:14px;
+}
+
+label:first-child{
+margin-top:0;
+}
+
+input[type="text"], textarea{
+width:100%;
+padding:12px 14px;
+border:2px solid #e0e0e0;
+border-radius:8px;
+font-size:14px;
+font-family:Segoe UI;
+transition:0.3s;
+box-sizing:border-box;
+}
+
+input[type="text"]:focus, textarea:focus{
+border-color:#2a5298;
+outline:none;
+box-shadow:0 0 0 3px rgba(42,82,152,0.15);
+}
+
+textarea{
+min-height:200px;
+resize:vertical;
+line-height:1.6;
+}
+
+/* Placeholder Tags */
+
+.placeholders{
+margin-top:12px;
+padding:12px 15px;
+background:#f0f4ff;
+border-radius:8px;
+border-left:4px solid #2a5298;
+}
+
+.placeholders h4{
+margin:0 0 8px;
+font-size:13px;
+color:#555;
+}
+
+.tag{
+display:inline-block;
+background:#2a5298;
+color:white;
+padding:4px 10px;
+border-radius:15px;
+font-size:12px;
+margin:3px 4px 3px 0;
+cursor:pointer;
+transition:0.2s;
+font-weight:500;
+}
+
+.tag:hover{
+background:#1e3c72;
+transform:scale(1.05);
+}
+
+/* Buttons */
+
+.btn-row{
+margin-top:20px;
+display:flex;
+gap:10px;
+align-items:center;
+}
+
+.save-btn{
+background:linear-gradient(135deg,#27ae60,#219a52);
+color:white;
+border:none;
+padding:12px 28px;
+border-radius:8px;
+font-size:14px;
+font-weight:bold;
+cursor:pointer;
+transition:0.3s;
+}
+
+.save-btn:hover{
+background:linear-gradient(135deg,#219a52,#1a7a3f);
+transform:translateY(-1px);
+box-shadow:0 4px 12px rgba(39,174,96,0.3);
+}
+
+.reset-btn{
+background:#e74c3c;
+color:white;
+border:none;
+padding:12px 28px;
+border-radius:8px;
+font-size:14px;
+font-weight:bold;
+cursor:pointer;
+transition:0.3s;
+}
+
+.reset-btn:hover{
+background:#c0392b;
+}
+
+/* Success/Error Messages */
+
+.message{
+padding:14px 20px;
+border-radius:10px;
+margin-bottom:20px;
+font-weight:bold;
+font-size:14px;
+animation:fadeIn 0.3s;
+}
+
+.message.success{
+background:#d4edda;
+color:#155724;
+border:1px solid #c3e6cb;
+}
+
+.message.error{
+background:#f8d7da;
+color:#721c24;
+border:1px solid #f5c6cb;
+}
+
+@keyframes fadeIn{
+from{opacity:0;transform:translateY(-10px)}
+to{opacity:1;transform:translateY(0)}
+}
+
+/* Preview */
+
+.preview-box{
+margin-top:15px;
+padding:15px;
+background:#fafafa;
+border:1px dashed #ccc;
+border-radius:8px;
+font-size:13px;
+white-space:pre-wrap;
+line-height:1.6;
+color:#444;
+max-height:250px;
+overflow-y:auto;
+}
+
+.preview-label{
+font-size:13px;
+color:#888;
+margin-top:15px;
+margin-bottom:6px;
+font-weight:bold;
+}
+
+/* Info banner */
+
+.info-banner{
+background:rgba(255,255,255,0.12);
+backdrop-filter:blur(10px);
+color:white;
+padding:15px 22px;
+border-radius:10px;
+margin-bottom:25px;
+font-size:13px;
+line-height:1.6;
+}
+
+.info-banner b{
+color:#ffd700;
+}
+
+/* Updated timestamp */
+.updated-at{
+font-size:11px;
+color:#999;
+margin-top:8px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="header">
+    <span>✉️ Manage Email Templates</span>
+    <a href="/principal_dashboard" class="back-btn">← Back to Dashboard</a>
+</div>
+
+<div class="container">
+
+<div class="info-banner">
+    📌 <b>How it works:</b> Edit the subject and body of your notification emails below. 
+    Use <b>placeholder tags</b> like <b>[FacultyName]</b>, <b>[Department]</b>, etc. — these will be automatically 
+    replaced with actual data when an email is sent. Click on any tag to copy it to clipboard.
+</div>
+
+{% if message %}
+<div class="message {{ message_type or 'success' }}">
+    {{ message }}
+</div>
+{% endif %}
+
+{% for tpl in templates %}
+<div class="template-card">
+    <div class="card-header" onclick="toggleCard(this)">
+        <div>
+            <h3>{{ tpl.display_name }}</h3>
+            <div class="desc">{{ tpl.description }}</div>
+        </div>
+        <span class="toggle-icon">▼</span>
+    </div>
+    <div class="card-body" id="card-{{ tpl.template_name }}">
+        <form action="/save_email_template" method="POST">
+            <input type="hidden" name="template_name" value="{{ tpl.template_name }}">
+            
+            <label>📧 Email Subject</label>
+            <input type="text" name="subject_template" value="{{ tpl.subject_template }}" required>
+
+            <label>📝 Email Body</label>
+            <textarea name="body_template" id="body-{{ tpl.template_name }}" oninput="updatePreview('{{ tpl.template_name }}')">{{ tpl.body_template }}</textarea>
+
+            <div class="placeholders">
+                <h4>Available Placeholder Tags (click to copy):</h4>
+                {% for tag in tpl.available_placeholders.split(', ') %}
+                <span class="tag" onclick="copyTag('{{ tag }}')">{{ tag }}</span>
+                {% endfor %}
+            </div>
+
+            <div class="preview-label">👁️ Live Preview:</div>
+            <div class="preview-box" id="preview-{{ tpl.template_name }}"></div>
+
+            {% if tpl.updated_at %}
+            <div class="updated-at">Last updated: {{ tpl.updated_at }}</div>
+            {% endif %}
+
+            <div class="btn-row">
+                <button type="submit" class="save-btn">💾 Save Template</button>
+                <button type="button" class="reset-btn" onclick="if(confirm('Reset this template to its default content?')) window.location='/reset_email_template/{{ tpl.template_name }}'">🔄 Reset to Default</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endfor %}
+
+</div>
+
+<script>
+
+function toggleCard(header) {
+    var body = header.nextElementSibling;
+    var icon = header.querySelector('.toggle-icon');
+    body.classList.toggle('show');
+    icon.classList.toggle('open');
+    
+    // Update preview when opening
+    if (body.classList.contains('show')) {
+        var templateName = body.id.replace('card-', '');
+        updatePreview(templateName);
+    }
+}
+
+function updatePreview(templateName) {
+    var textarea = document.getElementById('body-' + templateName);
+    var preview = document.getElementById('preview-' + templateName);
+    if (textarea && preview) {
+        var text = textarea.value;
+        // Replace placeholders with sample data for preview
+        var sampleData = {
+            '[FacultyName]': 'Dr. Rajesh Kumar',
+            '[Department]': 'CSE',
+            '[Description]': 'Medical appointment at city hospital',
+            '[Slot]': '10-11 AM',
+            '[Date]': '2026-05-03',
+            '[HODName]': 'Prof. Suresh Patil',
+            '[PrincipalName]': 'Dr. Principal',
+            '[ApprovedBy]': 'Prof. Suresh Patil (hod.cse@svit.edu)',
+            '[Deadline]': '03 May 2026, 11:00 AM'
+        };
+        for (var key in sampleData) {
+            text = text.split(key).join('<b style="color:#2a5298">' + sampleData[key] + '</b>');
+        }
+        preview.innerHTML = text.replace(/\n/g, '<br>');
+    }
+}
+
+function copyTag(tag) {
+    navigator.clipboard.writeText(tag).then(function() {
+        // Show a brief tooltip
+        var tooltip = document.createElement('div');
+        tooltip.textContent = 'Copied: ' + tag;
+        tooltip.style.cssText = 'position:fixed;top:20px;right:20px;background:#27ae60;color:white;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:bold;z-index:9999;animation:fadeIn 0.3s;';
+        document.body.appendChild(tooltip);
+        setTimeout(function() { tooltip.remove(); }, 1500);
+    });
+}
+
+// Auto-open first card
+document.addEventListener('DOMContentLoaded', function() {
+    var firstHeader = document.querySelector('.card-header');
+    if (firstHeader) toggleCard(firstHeader);
+});
+
+</script>
+
+</body>
+</html>

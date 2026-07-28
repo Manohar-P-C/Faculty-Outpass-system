@@ -1,0 +1,222 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Faculty Exit Monitoring System</title><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet"><style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+/* BACKGROUND */
+
+body{
+
+height:100vh;
+
+display:flex;
+flex-direction:column;
+
+background:linear-gradient(135deg,#0f4c81,#1e6bb8,#ff8c00);
+background-size:300% 300%;
+
+animation:gradientMove 10s ease infinite;
+
+}
+
+/* ANIMATION */
+
+@keyframes gradientMove{
+
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+
+}
+
+/* HEADER */
+
+.header{
+
+height:70px;
+display:flex;
+align-items:center;
+justify-content:center;
+
+color:white;
+font-size:22px;
+font-weight:600;
+
+background:rgba(0,0,0,0.2);
+backdrop-filter:blur(10px);
+
+}
+
+/* CENTER CONTAINER */
+
+.container{
+
+flex:1;
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+}
+
+/* GLASS CARD */
+
+.card{
+
+width:420px;
+
+background:rgba(255,255,255,0.15);
+
+backdrop-filter:blur(15px);
+
+border-radius:20px;
+
+padding:50px;
+
+text-align:center;
+
+box-shadow:0 20px 50px rgba(0,0,0,0.3);
+
+border:1px solid rgba(255,255,255,0.2);
+
+}
+
+/* TITLE */
+
+.title{
+
+font-size:28px;
+font-weight:600;
+
+color:white;
+
+margin-bottom:10px;
+
+}
+
+/* SUBTITLE */
+
+.subtitle{
+
+font-size:14px;
+
+color:#f1f1f1;
+
+margin-bottom:35px;
+
+}
+
+/* BUTTON */
+
+.btn{
+
+width:100%;
+
+padding:14px;
+
+margin-bottom:15px;
+
+border:none;
+
+border-radius:12px;
+
+font-size:16px;
+
+font-weight:500;
+
+cursor:pointer;
+
+transition:0.3s;
+
+color:white;
+
+}
+
+/* BUTTON COLORS */
+
+.principal{
+
+background:#ff8c00;
+
+}
+
+.hod{
+
+background:#e94560;
+
+}
+
+.faculty{
+
+background:#1e6bb8;
+
+}
+
+.security{
+
+background:#2e9e58;
+
+}
+
+/* HOVER EFFECT */
+
+.btn:hover{
+
+transform:scale(1.05);
+
+box-shadow:0 5px 20px rgba(0,0,0,0.3);
+
+}
+
+/* FOOTER */
+
+.footer{
+
+text-align:center;
+
+color:white;
+
+font-size:12px;
+
+padding:10px;
+
+}
+
+@media(max-width:500px){
+.card{width:90vw;padding:30px 20px;}
+.title{font-size:22px;}
+.btn{font-size:14px;padding:12px;}
+.header{font-size:18px;height:55px;}
+}
+
+</style></head><body><div class="header">
+Faculty Exit Monitoring System
+</div><div class="container"><div class="card"><div class="title">
+Faculty Exit Monitoring System
+</div><div class="subtitle">
+Sai Vidya Institute of Technology
+</div><a href="/principal_login">
+<button class="btn principal">
+Principal Login
+</button>
+</a><a href="/hod_login">
+<button class="btn hod">
+🎓 HOD Login
+</button>
+</a><a href="/faculty_login">
+<button class="btn faculty">
+Faculty Login
+</button>
+</a><a href="/security_login">
+<button class="btn security">
+Security Login
+</button>
+</a></div></div><div class="footer">
+SVIT Smart Campus Security Portal
+</div></body></html>

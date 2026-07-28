@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Principal Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+
+
+.logout-btn{
+position:absolute;
+top:20px;
+right:30px;
+background:#e74c3c;
+color:white;
+border:none;
+padding:10px 18px;
+border-radius:8px;
+cursor:pointer;
+font-weight:bold;
+}
+
+body{
+margin:0;
+font-family:Segoe UI;
+background:linear-gradient(135deg,#0f4c81,#1e6bb8,#ff8c00);
+background-size:300% 300%;
+animation:gradientMove 10s ease infinite;
+min-height:100vh;
+position:relative; /* ADD THIS */
+}
+
+@keyframes gradientMove{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+/* HEADER */
+
+.header{
+color:white;
+padding:20px 40px;
+font-size:26px;
+font-weight:bold;
+}
+
+/* CONTAINER */
+
+.container{
+display:flex;
+gap:30px;
+padding:30px;
+}
+
+/* LEFT PANEL */
+
+.sidebar{
+width:220px;
+min-width:220px;
+background:rgba(255,255,255,0.15);
+backdrop-filter:blur(10px);
+padding:20px;
+border-radius:12px;
+color:white;
+}
+
+.sidebar h3{
+margin-top:0;
+}
+
+.stat{
+background:rgba(255,255,255,0.2);
+padding:12px;
+border-radius:8px;
+margin-top:10px;
+}
+
+.urgent-stat{
+border-left: 4px solid #e74c3c !important;
+}
+
+/* MAIN CARD */
+
+.main{
+flex:1;
+display:flex;
+justify-content:center;
+align-items:flex-start;
+}
+
+.card{
+background:white;
+width:520px;
+max-width:100%;
+padding:35px;
+border-radius:15px;
+box-shadow:0 20px 40px rgba(0,0,0,0.25);
+}
+
+/* TITLE */
+
+.card h2{
+margin-top:0;
+text-align:center;
+}
+
+/* TEXT */
+
+.info{
+margin:12px 0;
+font-size:16px;
+}
+
+/* HOD BADGE */
+
+.hod-badge{
+display:inline-block;
+background:linear-gradient(135deg,#e94560,#c62a40);
+color:white;
+padding:3px 10px;
+border-radius:12px;
+font-size:12px;
+font-weight:bold;
+}
+
+/* AI SUMMARY */
+
+.ai{
+margin-top:15px;
+padding:12px;
+background:#f1f5ff;
+border-left:5px solid #2a5298;
+border-radius:6px;
+}
+
+/* BUTTONS */
+
+.buttons{
+margin-top:25px;
+text-align:center;
+}
+
+button{
+padding:12px 22px;
+border:none;
+border-radius:8px;
+font-size:15px;
+cursor:pointer;
+margin:6px;
+}
+
+.approve{
+background:#27ae60;
+color:white;
+}
+
+.decline{
+background:#e74c3c;
+color:white;
+}
+
+/* AI MODE BUTTON */
+
+.ai-mode{
+text-align:center;
+margin-bottom:15px;
+}
+
+.ai-mode button{
+background:#2ecc71;
+color:white;
+}
+
+.disable{
+background:#e74c3c;
+}
+
+/* MANAGE REQUESTS */
+
+.manage-section{
+    width:100%;
+}
+
+.manage-title{
+    text-align:center;
+    margin-bottom:8px;
+}
+
+.manage-title h2{
+    color:#1e3c72;
+    margin:0;
+    font-size:22px;
+    letter-spacing:0.5px;
+}
+
+.total-badge{
+    display:inline-block;
+    background:linear-gradient(135deg,#1e3c72,#2a5298);
+    color:white;
+    padding:8px 22px;
+    border-radius:25px;
+    font-size:14px;
+    font-weight:bold;
+    margin:12px 0 20px;
+}
+
+.dept-grid{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    justify-content:center;
+    margin-bottom:22px;
+}
+
+.dept-btn{
+    background:#f0f4ff;
+    border:2px solid #dde4f0;
+    padding:10px 16px;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:13px;
+    font-weight:600;
+    color:#2c3e50;
+    transition:all 0.25s;
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+
+.dept-btn:hover{
+    background:#2a5298;
+    color:white;
+    border-color:#2a5298;
+    transform:translateY(-2px);
+    box-shadow:0 4px 12px rgba(42,82,152,0.3);
+}
+
+.dept-btn.active{
+    background:#1e3c72;
+    color:white;
+    border-color:#1e3c72;
+    box-shadow:0 4px 12px rgba(30,60,114,0.35);
+}
+
+.dept-count{
+    background:rgba(0,0,0,0.1);
+    padding:2px 8px;
+    border-radius:12px;
+    font-size:11px;
+    font-weight:bold;
+}
+
+.dept-btn.active .dept-count,
+.dept-btn:hover .dept-count{
+    background:rgba(255,255,255,0.25);
+}
+
+.req-table-wrap{
+    max-height:320px;
+    overflow-y:auto;
+    border-radius:10px;
+    border:1px solid #e9ecef;
+}
+
+.req-table{
+    width:100%;
+    border-collapse:collapse;
+    font-size:13px;
+}
+
+.req-table thead{
+    position:sticky;
+    top:0;
+    z-index:1;
+}
+
+.req-table th{
+    background:#1e3c72;
+    color:white;
+    padding:10px 12px;
+    text-align:left;
+    font-weight:600;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:0.5px;
+}
+
+.req-table td{
+    padding:10px 12px;
+    border-bottom:1px solid #f0f0f0;
+    color:#333;
+}
+
+.req-table tr:hover td{
+    background:#f8f9ff;
+}
+
+.req-table tr:last-child td{
+    border-bottom:none;
+}
+
+.status-badge{
+    padding:3px 10px;
+    border-radius:12px;
+    font-size:11px;
+    font-weight:bold;
+    white-space:nowrap;
+}
+
+.status-approved{
+    background:#d4edda;
+    color:#155724;
+}
+
+.status-pending{
+    background:#fff3cd;
+    color:#856404;
+}
+
+.status-rejected{
+    background:#f8d7da;
+    color:#721c24;
+}
+
+.no-dept-msg{
+    text-align:center;
+    padding:30px;
+    color:#999;
+    font-size:14px;
+}
+
+.no-dept-msg span{
+    font-size:40px;
+    display:block;
+    margin-bottom:10px;
+}
+
+/* REQUESTS MAIN BUTTON */
+
+.requests-main-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:12px;
+    background:linear-gradient(135deg,#1e3c72,#2a5298);
+    color:white;
+    padding:20px 45px;
+    border-radius:16px;
+    font-size:22px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:all 0.3s;
+    box-shadow:0 8px 25px rgba(30,60,114,0.35);
+    letter-spacing:1px;
+}
+
+.requests-main-btn:hover{
+    transform:translateY(-3px);
+    box-shadow:0 12px 35px rgba(30,60,114,0.5);
+    background:linear-gradient(135deg,#2a5298,#3b6dc6);
+}
+
+.req-count-badge{
+    background:white;
+    color:#1e3c72;
+    padding:4px 14px;
+    border-radius:20px;
+    font-size:18px;
+    font-weight:bold;
+    min-width:24px;
+    text-align:center;
+}
+
+.req-count-badge-sm{
+    background:rgba(42,82,152,0.15);
+    color:#2a5298;
+    padding:3px 10px;
+    border-radius:15px;
+    font-size:13px;
+    font-weight:bold;
+}
+
+/* MANAGE ALL BUTTON */
+
+.manage-all-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:#f0f4ff;
+    color:#2a5298;
+    padding:12px 25px;
+    border-radius:10px;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    transition:all 0.25s;
+    border:2px solid #dde4f0;
+}
+
+.manage-all-btn:hover{
+    background:#2a5298;
+    color:white;
+    border-color:#2a5298;
+    transform:translateY(-2px);
+}
+
+/* BACK ARROW */
+
+.back-arrow{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:36px;
+    height:36px;
+    background:#f0f4ff;
+    border-radius:50%;
+    font-size:18px;
+    color:#1e3c72;
+    cursor:pointer;
+    transition:all 0.2s;
+    font-weight:bold;
+    flex-shrink:0;
+}
+
+.back-arrow:hover{
+    background:#1e3c72;
+    color:white;
+}
+
+/* VIEW BUTTON */
+
+.view-btn{
+    background:linear-gradient(135deg,#2a5298,#1e3c72);
+    color:white;
+    padding:6px 14px;
+    border-radius:8px;
+    text-decoration:none;
+    font-size:12px;
+    font-weight:bold;
+    transition:all 0.2s;
+    white-space:nowrap;
+}
+
+.view-btn:hover{
+    background:linear-gradient(135deg,#3b6dc6,#2a5298);
+    transform:scale(1.05);
+}
+
+/* ===== HAMBURGER MENU ===== */
+.hamburger-btn{
+    display:none;
+    position:fixed;
+    bottom:25px;
+    left:25px;
+    z-index:1001;
+    width:56px;
+    height:56px;
+    border-radius:50%;
+    border:none;
+    background:linear-gradient(135deg,#1e3c72,#2a5298);
+    color:white;
+    font-size:24px;
+    cursor:pointer;
+    box-shadow:0 6px 25px rgba(30,60,114,0.5);
+    transition:all 0.3s ease;
+    align-items:center;
+    justify-content:center;
+}
+.hamburger-btn:hover{
+    transform:scale(1.1);
+    box-shadow:0 8px 30px rgba(30,60,114,0.6);
+}
+.hamburger-btn.active{
+    background:linear-gradient(135deg,#64748b,#475569);
+    box-shadow:0 6px 25px rgba(100,116,139,0.5);
+}
+
+.sidebar-overlay{
+    display:none;
+    position:fixed;
+    top:0;left:0;
+    width:100%;height:100%;
+    background:rgba(0,0,0,0.5);
+    backdrop-filter:blur(4px);
+    z-index:999;
+    opacity:0;
+    transition:opacity 0.3s ease;
+}
+.sidebar-overlay.active{
+    opacity:1;
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:1024px){
+    .hamburger-btn{
+        display:flex;
+    }
+    .sidebar{
+        position:fixed;
+        top:0;
+        left:-300px;
+        width:270px;
+        min-width:270px;
+        height:100vh;
+        z-index:1000;
+        border-radius:0 16px 16px 0;
+        padding:25px 20px;
+        overflow-y:auto;
+        transition:left 0.35s cubic-bezier(0.4,0,0.2,1);
+        background:rgba(15,76,129,0.97);
+        backdrop-filter:blur(20px);
+        box-shadow:4px 0 30px rgba(0,0,0,0.4);
+    }
+    .sidebar.open{
+        left:0;
+    }
+    .sidebar-overlay.active{
+        display:block;
+        opacity:1;
+    }
+    .container{
+        flex-direction:column;
+        padding:15px;
+        gap:15px;
+    }
+    .card{
+        width:100%;
+        padding:20px 15px;
+    }
+    .header{
+        padding:15px 20px;
+        font-size:20px;
+    }
+    .logout-btn{
+        top:12px;
+        right:15px;
+        padding:7px 14px;
+        font-size:12px;
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity:0; transform:translateY(-20px) scale(0.95); }
+    to { opacity:1; transform:translateY(0) scale(1); }
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+<!-- HAMBURGER BUTTON -->
+<button class="hamburger-btn" id="hamburgerBtn" onclick="toggleSidebar()" aria-label="Open menu">☰</button>
+<!-- SIDEBAR OVERLAY -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<a href="/logout">
+    <button class="logout-btn">Logout</button>
+</a>
+
+<div class="header">
+Principal Control Panel
+</div>
+
+
+<div class="container">
+
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+<h3>Pending Requests</h3>
+
+{% if pending_requests|length > 0 %}
+    {% for req in pending_requests %}
+    <div class="stat {% if req.is_urgent %}urgent-stat{% endif %}" onclick="window.location='/principal_view_request/{{req.id}}'" style="cursor:pointer; transition:0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+        <b>{{req.name}}</b> {% if req.is_urgent %}<span style="color:#ff6b6b; font-size:10px; font-weight:bold; background:rgba(255,255,255,0.9); padding:2px 6px; border-radius:8px; float:right;">URGENT</span>{% endif %}<br>
+        <span style="font-size:11px; opacity:0.8;">{{req.department}} • {{req.slot}}</span>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="stat" style="font-size:12px; color:#ccc;">No pending reviews</div>
+{% endif %}
+
+<div class="stat">
+AI Monitoring Active
+</div>
+
+<div class="stat">
+Security Connected
+</div>
+
+<div style="margin-top:20px; border-top:1px solid rgba(255,255,255,0.15); padding-top:15px;">
+<h3 style="font-size:14px; margin-bottom:10px;">⚙️ User Management</h3>
+<a href="/manage_principals" style="display:block; color:white; text-decoration:none; padding:8px 12px; background:rgba(255,255,255,0.1); border-radius:8px; margin-bottom:6px; font-size:13px; transition:0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">👑 Manage Principals</a>
+<a href="/manage/hods" style="display:block; color:white; text-decoration:none; padding:8px 12px; background:rgba(255,255,255,0.1); border-radius:8px; margin-bottom:6px; font-size:13px; transition:0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">🎓 Manage HODs</a>
+
+<form action="/view_faculty" method="GET" style="margin-bottom:6px;">
+    <select name="department" onchange="this.form.submit()" style="width:100%; padding:8px 12px; background:rgba(255,255,255,0.1); border:1px solid transparent; border-radius:8px; color:white; font-size:13px; cursor:pointer; outline:none;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+        <option value="" disabled selected>👨‍🏫 View Faculty by Dept</option>
+        <option value="CSE" style="color:black;">CSE</option>
+        <option value="AI" style="color:black;">AI</option>
+        <option value="ISE" style="color:black;">ISE</option>
+        <option value="ECE" style="color:black;">ECE</option>
+        <option value="CIVIL" style="color:black;">CIVIL</option>
+        <option value="MECH" style="color:black;">MECH</option>
+        <option value="MATHS" style="color:black;">MATHS</option>
+        <option value="PHYSICS" style="color:black;">PHYSICS</option>
+        <option value="CHEM" style="color:black;">CHEM</option>
+        <option value="MBA" style="color:black;">MBA</option>
+        <option value="CSDS" style="color:black;">CSDS</option>
+    </select>
+</form>
+
+<a href="/manage/security" style="display:block; color:white; text-decoration:none; padding:8px 12px; background:rgba(255,255,255,0.1); border-radius:8px; font-size:13px; transition:0.3s; margin-bottom:6px;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">🔒 Manage Security</a>
+<a href="/manage_email_templates" style="display:block; color:white; text-decoration:none; padding:8px 12px; background:rgba(255,255,255,0.1); border-radius:8px; font-size:13px; transition:0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">✉️ Email Templates</a>
+</div>
+
+<div style="margin-top:20px; border-top:1px solid rgba(255,255,255,0.15); padding-top:15px;">
+<h3 style="font-size:14px; margin-bottom:10px;">🔄 Reset Controls</h3>
+
+<form action="/reset_all_requests" method="POST" onsubmit="return confirm('⚠️ This will permanently delete ALL exit requests and warnings. Are you sure?');" style="margin-bottom:10px;">
+    <button type="submit" style="width:100%; padding:10px 12px; background:linear-gradient(135deg,#ef4444,#dc2626); border:none; border-radius:8px; color:white; font-size:13px; font-weight:bold; cursor:pointer; transition:0.3s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">🗑️ Reset All Requests Now</button>
+</form>
+
+<form action="/set_auto_reset" method="POST" style="margin-bottom:6px;">
+    <label style="font-size:11px; color:rgba(255,255,255,0.7); display:block; margin-bottom:4px;">📅 Monthly Auto-Reset Day</label>
+    <div style="display:flex; gap:6px; align-items:center; margin-bottom:6px;">
+        <input type="number" name="auto_reset_day" min="1" max="31" placeholder="Day" required style="flex:1; padding:7px 10px; border-radius:8px; border:none; font-size:13px; box-sizing:border-box; background:rgba(255,255,255,0.9); text-align:center;" {% if auto_reset_date %}value="{{auto_reset_date}}"{% endif %}>
+        <span style="font-size:11px; color:rgba(255,255,255,0.6);">of every month</span>
+    </div>
+    <button type="submit" style="width:100%; padding:8px 12px; background:linear-gradient(135deg,#f59e0b,#d97706); border:none; border-radius:8px; color:white; font-size:12px; font-weight:bold; cursor:pointer; transition:0.3s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">⏰ Set Monthly Reset</button>
+</form>
+
+{% if auto_reset_date %}
+<div style="background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.4); border-radius:8px; padding:8px 10px; margin-top:6px; font-size:11px; color:#fbbf24;">
+    🔁 Requests reset on the <b>{{auto_reset_date}}</b>{% if auto_reset_date == '1' %}st{% elif auto_reset_date == '2' %}nd{% elif auto_reset_date == '3' %}rd{% else %}th{% endif %} of every month
+    <form action="/cancel_auto_reset" method="POST" style="margin-top:6px;">
+        <button type="submit" style="width:100%; padding:5px 8px; background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.3); border-radius:6px; color:white; font-size:11px; cursor:pointer;">❌ Cancel Auto-Reset</button>
+    </form>
+</div>
+{% endif %}
+</div>
+
+</div>
+
+
+<!-- MAIN REQUEST CARD -->
+
+<div class="main">
+
+<div class="card" {% if not data %}style="width:700px;"{% endif %}>
+
+{% if data %}
+
+
+
+
+<h2>Faculty Exit Request</h2>
+
+{% if data.is_urgent %}
+<div style="background:linear-gradient(135deg, #ff4d4d, #c0392b); color:white; padding:10px; border-radius:8px; text-align:center; font-weight:bold; margin-bottom:15px; box-shadow:0 4px 10px rgba(231, 76, 60, 0.3);">
+    🚨 URGENT: Exit slot is within 1 hour of request submission!
+</div>
+{% endif %}
+
+<p class="info"><b>Name:</b> {{data.name}}</p>
+
+<p class="info"><b>Email:</b> {{data.email}}</p>
+
+<p class="info"><b>Department:</b> {{data.department}}</p>
+
+<p class="info"><b>Date:</b> {% if data.request_date %}{{ data.request_date }}{% else %}Today{% endif %}</p>
+
+<p class="info"><b>Slot:</b> {{data.slot}}</p>
+
+<p class="info"><b>Description:</b> {{data.description}}</p>
+
+{% if data.proof %}
+<p class="info"><b>Proof:</b> 
+    <a href="/static/uploads/{{data.proof}}" target="_blank" style="color: #2a5298; text-decoration: none; font-weight: bold;">📄 View Uploaded Proof</a>
+</p>
+{% endif %}
+
+{% if data.hod_approved_by %}
+<p class="info"><b>HOD Approved by:</b> {{data.hod_approved_by}} 
+    {% if '(Self - HOD)' in data.hod_approved_by %}
+    <span style="background:linear-gradient(135deg,#e94560,#c0392b); color:white; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:bold;">🎓 HOD Request</span>
+    {% else %}
+    <span class="hod-badge">HOD Verified ✓</span>
+    {% endif %}
+</p>
+{% endif %}
+
+<p class="info"><b>Status:</b> {{data.status}}</p>
+
+
+<div class="ai">
+<b>AI Summary:</b> {{ai_summary}}
+</div>
+
+{% if data.status == 'Pending Principal' %}
+<div class="buttons">
+
+<a href="/approve/{{data.id}}">
+<button class="approve">Approve</button>
+</a>
+
+<button class="decline" onclick="document.getElementById('rejectModal').style.display='flex'">Decline</button>
+
+</div>
+
+<!-- REJECTION REASON MODAL -->
+<div id="rejectModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); backdrop-filter:blur(4px); z-index:9999; justify-content:center; align-items:center;">
+    <div style="background:white; border-radius:16px; padding:30px; width:420px; max-width:90vw; box-shadow:0 20px 60px rgba(0,0,0,0.3); animation:fadeIn 0.3s ease;">
+        <h3 style="color:#e74c3c; margin:0 0 5px; font-size:20px;">❌ Reject Request</h3>
+        <p style="color:#666; font-size:13px; margin-bottom:20px;">Please provide a reason for rejecting <b>{{data.name}}</b>'s exit request.</p>
+        <form method="POST" action="/decline/{{data.id}}">
+            <textarea name="rejection_reason" rows="4" required placeholder="Enter rejection reason..." style="width:100%; padding:12px; border:2px solid #e0e0e0; border-radius:10px; font-family:inherit; font-size:14px; resize:vertical; box-sizing:border-box; transition:border-color 0.3s;" onfocus="this.style.borderColor='#e74c3c'" onblur="this.style.borderColor='#e0e0e0'"></textarea>
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <button type="button" onclick="document.getElementById('rejectModal').style.display='none'" style="flex:1; padding:12px; background:#f1f5f9; color:#475569; border:none; border-radius:10px; font-weight:bold; cursor:pointer; font-size:14px;">Cancel</button>
+                <button type="submit" style="flex:1; padding:12px; background:linear-gradient(135deg,#e74c3c,#c0392b); color:white; border:none; border-radius:10px; font-weight:bold; cursor:pointer; font-size:14px;">Reject Request</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}
+
+{% else %}
+
+<!-- REQUESTS BUTTON FLOW -->
+<div class="manage-section">
+
+    <!-- STEP 1: REQUESTS BUTTON -->
+    <div id="step-requests" style="text-align:center; padding:40px 0;">
+        <div class="requests-main-btn" onclick="showDepartments()">
+            📋 REQUESTS <span class="req-count-badge">{{ total_pending }}</span>
+        </div>
+        <p style="color:#999; font-size:13px; margin-top:15px;">Click to view pending approval requests by department</p>
+
+        <!-- Manage All Requests link below -->
+        <div style="margin-top:30px; border-top:1px solid #eee; padding-top:20px;">
+            <div class="manage-all-btn" onclick="showManageAll()">
+                📊 Manage All Requests <span class="req-count-badge-sm">{{ total_requests }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 2: DEPARTMENT SELECTOR (hidden) -->
+    <div id="step-departments" style="display:none;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+            <span class="back-arrow" onclick="goBack('step-requests')">←</span>
+            <h2 style="margin:0; color:#1e3c72; font-size:20px;">Select Department</h2>
+            <span class="total-badge" style="margin:0;">Pending: {{ total_pending }}</span>
+        </div>
+
+        <div class="dept-grid">
+            {% for dept, count in pending_dept_counts.items()|sort %}
+            <div class="dept-btn" onclick="showDeptRequests('{{ dept }}', this)">
+                {{ dept }} <span class="dept-count">{{ count }}</span>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if total_pending == 0 %}
+        <div class="no-dept-msg">
+            <span>✅</span>
+            No pending requests from any department.
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- STEP 3: DEPARTMENT REQUESTS TABLE (hidden) -->
+    <div id="step-dept-requests" style="display:none;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+            <span class="back-arrow" onclick="goBack('step-departments')">←</span>
+            <h2 style="margin:0; color:#1e3c72; font-size:20px;" id="dept-title">Department</h2>
+        </div>
+
+        {% if pending_requests|length > 0 %}
+        <div class="req-table-wrap">
+            <table class="req-table" id="pendingTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Slot</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for req in pending_requests %}
+                    <tr data-dept="{{ req.department }}">
+                        <td><b>{{ req.name }}</b></td>
+                        <td>{{ req.department }}</td>
+                        <td>{{ req.slot }}</td>
+                        <td>{{ req.request_date if req.request_date else '—' }}</td>
+                        <td>
+                            <a href="/principal_view_request/{{ req.id }}" class="view-btn">👁️ View</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- MANAGE ALL REQUESTS (hidden) -->
+    <div id="step-manage-all" style="display:none;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:15px;">
+            <span class="back-arrow" onclick="goBack('step-requests')">←</span>
+            <h2 style="margin:0; color:#1e3c72; font-size:20px;">📊 All Requests</h2>
+            <span class="total-badge" style="margin:0;">Total: {{ total_requests }}</span>
+        </div>
+
+        <div class="dept-grid" style="margin-bottom:15px;">
+            <div class="dept-btn active" onclick="filterAll('all', this)">
+                All <span class="dept-count">{{ total_requests }}</span>
+            </div>
+            {% for dept, count in dept_counts.items()|sort %}
+            <div class="dept-btn" onclick="filterAll('{{ dept }}', this)">
+                {{ dept }} <span class="dept-count">{{ count }}</span>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% if all_requests|length > 0 %}
+        <div class="req-table-wrap">
+            <table class="req-table" id="allRequestsTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Department</th>
+                        <th>Slot</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for req in all_requests %}
+                    <tr data-dept="{{ req.department }}">
+                        <td><b>{{ req.name }}</b></td>
+                        <td>{{ req.department }}</td>
+                        <td>{{ req.slot }}</td>
+                        <td>{{ req.request_date if req.request_date else '—' }}</td>
+                        <td>
+                            {% if req.status == 'Approved' %}
+                            <span class="status-badge status-approved">✅ Approved</span>
+                            {% elif 'Pending' in req.status %}
+                            <span class="status-badge status-pending">⏳ {{ req.status }}</span>
+                            {% elif 'Rejected' in req.status %}
+                            <span class="status-badge status-rejected">❌ {{ req.status }}</span>
+                            {% else %}
+                            <span class="status-badge">{{ req.status }}</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="no-dept-msg">
+            <span>📭</span>
+            No requests found in the system yet.
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+
+{% endif %}
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+function showDepartments() {
+    document.getElementById('step-requests').style.display = 'none';
+    document.getElementById('step-departments').style.display = 'block';
+}
+
+function showDeptRequests(dept, btn) {
+    // Highlight active button
+    document.querySelectorAll('#step-departments .dept-btn').forEach(function(b) {
+        b.classList.remove('active');
+    });
+    btn.classList.add('active');
+
+    // Update title
+    document.getElementById('dept-title').textContent = dept + ' — Pending Requests';
+
+    // Filter and show table
+    var rows = document.querySelectorAll('#pendingTable tbody tr');
+    rows.forEach(function(row) {
+        row.style.display = row.getAttribute('data-dept') === dept ? '' : 'none';
+    });
+
+    document.getElementById('step-departments').style.display = 'none';
+    document.getElementById('step-dept-requests').style.display = 'block';
+}
+
+function showManageAll() {
+    document.getElementById('step-requests').style.display = 'none';
+    document.getElementById('step-manage-all').style.display = 'block';
+}
+
+function filterAll(dept, btn) {
+    document.querySelectorAll('#step-manage-all .dept-btn').forEach(function(b) {
+        b.classList.remove('active');
+    });
+    btn.classList.add('active');
+
+    var rows = document.querySelectorAll('#allRequestsTable tbody tr');
+    rows.forEach(function(row) {
+        if (dept === 'all' || row.getAttribute('data-dept') === dept) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
+
+function goBack(targetId) {
+    // Hide all steps
+    document.getElementById('step-requests').style.display = 'none';
+    document.getElementById('step-departments').style.display = 'none';
+    document.getElementById('step-dept-requests').style.display = 'none';
+    document.getElementById('step-manage-all').style.display = 'none';
+    // Show target
+    document.getElementById(targetId).style.display = targetId === 'step-requests' ? 'block' : 'block';
+    // Reset active buttons
+    document.querySelectorAll('.dept-btn').forEach(function(b) {
+        b.classList.remove('active');
+    });
+}
+
+// ===== HAMBURGER SIDEBAR TOGGLE =====
+function toggleSidebar() {
+    var sidebar = document.querySelector('.sidebar');
+    var overlay = document.getElementById('sidebarOverlay');
+    var btn = document.getElementById('hamburgerBtn');
+    var isOpen = sidebar.classList.contains('open');
+
+    if (isOpen) {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('active');
+        btn.classList.remove('active');
+        btn.innerHTML = '☰';
+        setTimeout(function(){ overlay.style.display = 'none'; }, 300);
+    } else {
+        overlay.style.display = 'block';
+        overlay.offsetHeight;
+        sidebar.classList.add('open');
+        overlay.classList.add('active');
+        btn.classList.add('active');
+        btn.innerHTML = '✕';
+    }
+}
+</script>
+
+</body>
+</html>

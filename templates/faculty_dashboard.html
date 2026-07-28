@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Faculty Request</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+/* ===== TOP BAR ===== */
+.top-bar{
+    position:absolute;
+    top:20px;
+    right:30px;
+}
+
+.logout-btn{
+    background:linear-gradient(135deg,#ff4d4d,#ff1a1a);
+    color:white;
+    padding:8px 18px;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:bold;
+    box-shadow:0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* ===== BODY ===== */
+body{
+font-family:Poppins;
+background:linear-gradient(135deg,#0f4c81,#1e6bb8,#ff8c00);
+background-size:300% 300%;
+animation:gradientMove 10s ease infinite;
+min-height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+padding:30px 10px;
+}
+
+@keyframes gradientMove{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+/* ===== CARD ===== */
+.card{
+    background:white;
+    padding:30px;
+    border-radius:15px;
+    width:430px;
+    max-width:95vw;
+    box-shadow:0 10px 30px rgba(0,0,0,0.3);
+}
+
+/* ===== ANALYTICS ===== */
+.analytics{
+    background:#f1f5f9;
+    padding:10px;
+    border-radius:10px;
+    margin-bottom:15px;
+    font-size:13px;
+}
+
+/* Inputs */
+input, textarea{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    margin-bottom:15px;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+
+/* Button */
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    background:#ff7b00;
+    color:white;
+    border-radius:8px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+button:disabled{
+    background:gray;
+}
+
+/* ===== HOURS QUOTA ===== */
+.quota-box {
+    background: linear-gradient(135deg, #f0f4ff, #e8eeff);
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #c7d2fe;
+}
+.quota-box .quota-title {
+    font-size: 13px;
+    font-weight: bold;
+    color: #4338ca;
+    margin-bottom: 8px;
+}
+.quota-bar {
+    background: #e2e8f0;
+    border-radius: 20px;
+    height: 12px;
+    overflow: hidden;
+    margin-bottom: 6px;
+}
+.quota-bar-fill {
+    height: 100%;
+    border-radius: 20px;
+    transition: width 0.5s ease;
+}
+.quota-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #64748b;
+}
+
+/* ===== DURATION SELECTOR ===== */
+.duration-container {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0 15px;
+}
+.duration-option {
+    flex: 1;
+    text-align: center;
+}
+.duration-option input[type="radio"] {
+    display: none;
+}
+.duration-option label {
+    display: block;
+    padding: 12px 8px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+}
+.duration-option label:hover {
+    border-color: #0077b6;
+    background: #f0f8ff;
+}
+.duration-option input[type="radio"]:checked + label {
+    border-color: #0077b6;
+    background: linear-gradient(135deg, #0077b6, #005f8d);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 119, 182, 0.3);
+}
+.duration-option input[type="radio"]:disabled + label {
+    opacity: 0.4;
+    cursor: not-allowed;
+    background: #f1f5f9;
+}
+.duration-option .dur-hours {
+    font-size: 24px;
+    font-weight: bold;
+    display: block;
+}
+.duration-option .dur-label {
+    font-size: 11px;
+    margin-top: 2px;
+    display: block;
+}
+
+/* ===== RETURN REMINDER BANNER ===== */
+.reminder-banner {
+    display: none;
+    background: linear-gradient(135deg, #ff6b35, #ff4444, #ff6b35);
+    background-size: 200% 200%;
+    animation: reminderGlow 2s ease-in-out infinite;
+    color: white;
+    padding: 18px 20px;
+    border-radius: 14px;
+    margin-bottom: 15px;
+    text-align: center;
+    box-shadow: 0 6px 25px rgba(255, 68, 68, 0.4);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+@keyframes reminderGlow {
+    0%, 100% { background-position: 0% 50%; box-shadow: 0 6px 25px rgba(255, 68, 68, 0.4); }
+    50% { background-position: 100% 50%; box-shadow: 0 6px 35px rgba(255, 68, 68, 0.6); }
+}
+.reminder-banner::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    animation: reminderShine 3s ease-in-out infinite;
+}
+@keyframes reminderShine {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+.reminder-icon {
+    font-size: 28px;
+    display: block;
+    margin-bottom: 6px;
+    animation: reminderBell 1s ease-in-out infinite;
+}
+@keyframes reminderBell {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(15deg); }
+    75% { transform: rotate(-15deg); }
+}
+.reminder-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.reminder-detail {
+    font-size: 13px;
+    opacity: 0.95;
+}
+.reminder-countdown {
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 6px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* ===== TIMER BOX ===== */
+.timer-box{
+    text-align:center;
+    font-weight:bold;
+    margin-bottom:15px;
+    padding:12px;
+    border-radius:10px;
+    background:linear-gradient(135deg,#ef4444,#f97316);
+    color:white;
+    display:none;
+}
+
+/* QR BOX */
+.qr-box{
+    text-align:center;
+    margin-top:15px;
+}
+/* STATUS STYLES */
+.status-box {
+    text-align:center;
+    padding:10px;
+    margin-top:20px;
+    border-radius:8px;
+    font-weight:bold;
+    color:white;
+}
+.status-approved { background:#2ecc71; }
+.status-rejected { background:#e74c3c; }
+.status-pending { background:#f39c12; }
+
+/* Banned warning */
+.banned-warning {
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    border: 1px solid #f87171;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    color: #991b1b;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:600px){
+    body{padding:15px 8px;}
+    .card{width:100%;max-width:100%;padding:20px 15px;border-radius:12px;}
+    .top-bar{top:10px;right:15px;}
+    .logout-btn{padding:6px 12px;font-size:13px;}
+    .duration-container{flex-direction:column;gap:6px;}
+}
+@media(min-width:601px) and (max-width:1024px){
+    .card{width:500px;max-width:90vw;}
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="top-bar">
+    <a href="/logout" class="logout-btn">Logout</a>
+</div>
+
+<div class="card">
+
+<h2 style="text-align:center;">Faculty Exit Request</h2>
+
+<!-- ===== PROFILE DETAILS ===== -->
+<div style="background:#e2e8f0; padding:15px; border-radius:10px; margin-bottom:15px; text-align:center; position:relative;">
+    {% if photo %}
+    <img src="/static/uploads/{{ photo }}" style="width:80px; height:80px; border-radius:50%; object-fit:cover; border:3px solid white; box-shadow:0 4px 10px rgba(0,0,0,0.1); margin-bottom:10px;">
+    {% else %}
+    <div style="width:80px; height:80px; border-radius:50%; background:#cbd5e1; display:flex; align-items:center; justify-content:center; margin:0 auto 10px auto; font-size:32px; color:white; box-shadow:0 4px 10px rgba(0,0,0,0.1); border:3px solid white;">👤</div>
+    {% endif %}
+    <div style="font-size:18px; font-weight:bold; color:#1e293b;">{{ name }}</div>
+    <div style="font-size:14px; color:#475569; margin-bottom: 10px;">
+        {{ designation }} {% if designation %} | {% endif %} {{ department }} Department
+    </div>
+
+    <!-- Upload Photo Button -->
+    <form action="/upload_profile_photo" method="POST" enctype="multipart/form-data" style="margin-top:10px; display: flex; flex-direction: column; align-items: center; gap: 5px;">
+        <input type="file" name="photo" accept="image/*" style="font-size:11px; padding:5px; width: 80%; border: 1px dashed #94a3b8; background: transparent; cursor: pointer;" required>
+        <button type="submit" style="padding:6px 12px; font-size:12px; width:auto; background:#475569; border-radius: 4px;">Update Photo</button>
+    </form>
+</div>
+
+<!-- ===== HOURS QUOTA ===== -->
+<div class="quota-box">
+    <div class="quota-title">📊 Monthly Exit Hours Quota</div>
+    <div class="quota-bar">
+        {% set fill_pct = ((hours_used|default(0)) / 3 * 100) %}
+        {% if fill_pct > 100 %}{% set fill_pct = 100 %}{% endif %}
+        {% if fill_pct >= 100 %}
+            {% set bar_bg = "linear-gradient(135deg,#ef4444,#dc2626)" %}
+        {% elif fill_pct >= 66 %}
+            {% set bar_bg = "linear-gradient(135deg,#f59e0b,#d97706)" %}
+        {% else %}
+            {% set bar_bg = "linear-gradient(135deg,#22c55e,#16a34a)" %}
+        {% endif %}
+        <div class="quota-bar-fill" id="quotaBarFill"></div>
+        <script>
+            (function(){
+                var el = document.getElementById("quotaBarFill");
+                if(el){ el.style.width = "{{ fill_pct }}%"; el.style.background = "{{ bar_bg }}"; }
+            })();
+        </script>
+    </div>
+    <div class="quota-info">
+        <span>⏱ Used: <b>{{ hours_used|default(0) }}h</b> / 3h</span>
+        <span>✅ Remaining: <b>{{ hours_remaining|default(3) }}h</b></span>
+    </div>
+</div>
+
+<!-- ===== ANALYTICS ===== -->
+<div class="analytics">
+    📊 Hours Used This Month: {{hours_used|default(0)}} / 3 <br>
+    ⏱ Late Returns: {{late_count|default(0)}} <br>
+    ⚠️ Late Warnings: <b><span style="color:#dc2626;">{{warning_count|default(0)}}</span></b><br>
+    ✅ Approved: {{approved|default(0)}} <br>
+    ❌ Rejected: {{rejected|default(0)}}
+</div>
+
+<!-- ===== RETURN REMINDER BANNER ===== -->
+<div id="reminderBanner" class="reminder-banner">
+    <span class="reminder-icon">🔔</span>
+    <div class="reminder-title">⚠ Return Reminder</div>
+    <div class="reminder-detail">Please return to college before your deadline!</div>
+    <div class="reminder-countdown" id="reminderCountdown"></div>
+    <div class="reminder-detail" id="reminderDeadline" style="margin-top:4px; font-size:12px; opacity:0.8;"></div>
+</div>
+
+<!-- ===== TIMER ===== -->
+<div id="timerBox" class="timer-box">
+<span id="timer"></span>
+</div>
+
+<a href="/faculty_history">
+    <button style="background:#0077b6;">📜 View History</button>
+</a>
+
+{% if banned %}
+<div class="banned-warning">
+    🚫 You have used all 3 exit hours for this month.<br>
+    <span style="font-weight:normal; font-size:13px;">Your quota resets on the 1st of next month.</span>
+</div>
+{% else %}
+<form method="POST" enctype="multipart/form-data">
+
+<label>Name</label>
+<input type="text" name="name" value="{{ name }}" required readonly style="background:#f1f5f9; cursor:not-allowed;">
+
+<label>Description</label>
+<textarea name="description" rows="4" required></textarea>
+
+<label>Upload Proof (Optional)</label>
+<input type="file" name="proof" accept=".pdf, image/png, image/jpeg, image/jpg">
+
+<label>Select Date</label>
+<input type="date" name="request_date" id="request_date" required>
+
+<label>Out Time</label>
+<input type="time" name="out_time" id="out_time" required min="08:00" max="17:00" style="font-size:16px; padding:12px;">
+
+<label>Duration (Hours)</label>
+<div class="duration-container">
+    <div class="duration-option">
+        <input type="radio" name="duration_hours" value="1" id="d1" {% if hours_remaining|default(3) >= 1 %}{% else %}disabled{% endif %} checked>
+        <label for="d1">
+            <span class="dur-hours">1</span>
+            <span class="dur-label">Hour</span>
+        </label>
+    </div>
+    <div class="duration-option">
+        <input type="radio" name="duration_hours" value="2" id="d2" {% if hours_remaining|default(3) >= 2 %}{% else %}disabled{% endif %}>
+        <label for="d2">
+            <span class="dur-hours">2</span>
+            <span class="dur-label">Hours</span>
+        </label>
+    </div>
+    <div class="duration-option">
+        <input type="radio" name="duration_hours" value="3" id="d3" {% if hours_remaining|default(3) >= 3 %}{% else %}disabled{% endif %}>
+        <label for="d3">
+            <span class="dur-hours">3</span>
+            <span class="dur-label">Hours</span>
+        </label>
+    </div>
+</div>
+
+<button type="submit">Send Request</button>
+
+</form>
+{% endif %}
+
+<!-- ===== DIGITAL PASS / STATUS ===== -->
+
+{% if status %}
+{% set status_class = 'status-approved' if status == 'Approved' else 'status-rejected' if 'Rejected' in status else 'status-pending' %}
+<div class="status-box {{ status_class }}">
+    Status: {{ status }}
+</div>
+{% if rejection_reason and 'Rejected' in status %}
+<div style="background:linear-gradient(135deg,#fee2e2,#fecaca); border:1px solid #f87171; padding:14px 18px; border-radius:10px; margin-top:10px;">
+    <div style="font-weight:bold; color:#991b1b; font-size:13px; margin-bottom:5px;">📝 Rejection Reason:</div>
+    <div style="color:#7f1d1d; font-size:14px; line-height:1.5;">{{ rejection_reason }}</div>
+</div>
+{% endif %}
+{% endif %}
+
+{% if pass_generated %}
+<div class="qr-box" id="qrSection" style="display:none;">
+    <h4>🎫 Your Exit Pass</h4>
+
+    <div style="display:flex; gap:20px; justify-content:center; flex-wrap:wrap; margin:15px 0;">
+        <!-- EXIT QR -->
+        <div style="text-align:center; background:linear-gradient(135deg,#fee2e2,#fecaca); padding:15px; border-radius:14px; border:2px solid #f87171; min-width:160px;">
+            <div style="font-weight:bold; color:#dc2626; font-size:14px; margin-bottom:8px;">🚪 EXIT PASS</div>
+            <img src="{{qr_code}}" width="130" style="border:3px solid #f87171; border-radius:10px; box-shadow:0 4px 10px rgba(220,38,38,0.2);">
+            {% if exit_scan_time %}
+            <div style="margin-top:8px; color:#16a34a; font-size:12px; font-weight:bold;">✅ Scanned: {{ exit_scan_time.strftime('%d %b %I:%M %p') }}</div>
+            {% else %}
+            <div style="margin-top:8px; color:#9ca3af; font-size:11px;">⏳ Not yet scanned</div>
+            {% endif %}
+            <a href="/download_pass"><button type="button" style="background:#dc2626; font-size:12px; padding:6px 12px; margin-top:8px; width:auto;">⬇ Download</button></a>
+        </div>
+
+        <!-- ENTRY QR -->
+        <div style="text-align:center; background:linear-gradient(135deg,#dcfce7,#bbf7d0); padding:15px; border-radius:14px; border:2px solid #4ade80; min-width:160px;">
+            <div style="font-weight:bold; color:#16a34a; font-size:14px; margin-bottom:8px;">🏫 ENTRY PASS</div>
+            <img src="{{qr_code_entry}}" width="130" style="border:3px solid #4ade80; border-radius:10px; box-shadow:0 4px 10px rgba(22,163,74,0.2);">
+            {% if entry_scan_time %}
+            <div style="margin-top:8px; color:#16a34a; font-size:12px; font-weight:bold;">✅ Returned: {{ entry_scan_time.strftime('%d %b %I:%M %p') }}</div>
+            {% else %}
+            <div style="margin-top:8px; color:#9ca3af; font-size:11px;">⏳ Not yet scanned</div>
+            {% endif %}
+            <a href="/download_entry_pass"><button type="button" style="background:#16a34a; font-size:12px; padding:6px 12px; margin-top:8px; width:auto;">⬇ Download</button></a>
+        </div>
+    </div>
+</div>
+<div id="qrLocked" class="status-box status-pending" style="display:none; margin-top:15px;">
+    🔒 QR Codes will unlock 10 minutes before your slot
+</div>
+{% endif %}
+
+</div>
+
+<!-- ===== COUNTDOWN SCRIPT ===== -->
+<script>
+
+let deadline = "{{deadline}}";
+let slotStart = "{{slot_start}}";
+
+if(deadline && deadline !== "None"){
+
+    document.getElementById("timerBox").style.display = "block";
+
+    let end = new Date(deadline).getTime();
+    let start = (slotStart && slotStart !== "None") ? new Date(slotStart).getTime() : null;
+
+    let x = setInterval(function(){
+
+        let now = new Date().getTime();
+
+        // If slot hasn't started yet, show waiting message
+        if(start && now < start){
+            let waitDiff = start - now;
+            let wh = Math.floor(waitDiff / (1000*60*60));
+            let wm = Math.floor((waitDiff % (1000*60*60)) / (1000*60));
+            let ws = Math.floor((waitDiff % (1000*60)) / 1000);
+            document.getElementById("timerBox").style.background = "linear-gradient(135deg,#f59e0b,#d97706)";
+            document.getElementById("timer").innerHTML = "⏳ Slot starts in " + wh + "h " + wm + "m " + ws + "s";
+            return;
+        }
+
+        // Slot has started or no start time — count down to end
+        let diff = end - now;
+
+        if(diff <= 0){
+            document.getElementById("timerBox").style.background = "linear-gradient(135deg,#ef4444,#dc2626)";
+            document.getElementById("timer").innerHTML = "⚠ Time Over";
+            clearInterval(x);
+            return;
+        }
+
+        document.getElementById("timerBox").style.background = "linear-gradient(135deg,#22c55e,#16a34a)";
+
+        let h = Math.floor(diff / (1000*60*60));
+        let m = Math.floor((diff % (1000*60*60)) / (1000*60));
+        let s = Math.floor((diff % (1000*60)) / 1000);
+
+        document.getElementById("timer").innerHTML =
+            "⏱ Time Remaining: " + h + "h " + m + "m " + s + "s";
+
+    },1000);
+}
+
+// ===== QR CODE VISIBILITY (10 min before slot) =====
+(function() {
+    var qrSection = document.getElementById("qrSection");
+    var qrLocked = document.getElementById("qrLocked");
+    if (!qrSection) return; // no QR to show
+
+    var slotStartStr = slotStart;
+    if (!slotStartStr || slotStartStr === "None") {
+        qrSection.style.display = "block";
+        return;
+    }
+
+    var slotStartTime = new Date(slotStartStr).getTime();
+    var validFrom = slotStartTime - (10 * 60 * 1000); // 10 minutes before
+
+    function checkQR() {
+        var now = new Date().getTime();
+        if (now >= validFrom) {
+            qrSection.style.display = "block";
+            if (qrLocked) qrLocked.style.display = "none";
+        } else {
+            qrSection.style.display = "none";
+            if (qrLocked) qrLocked.style.display = "block";
+        }
+    }
+
+    checkQR();
+    setInterval(checkQR, 1000);
+})();
+
+// ===== SET DATE BOUNDS & DYNAMIC TIME VALIDATION =====
+(function() {
+    var dateInput = document.getElementById("request_date");
+    var timeInput = document.getElementById("out_time");
+    var form = document.querySelector('form[method="POST"]');
+    var durationRadios = document.querySelectorAll('input[name="duration_hours"]');
+
+    if(dateInput) {
+        var today = new Date();
+        var maxDate = new Date();
+        maxDate.setDate(today.getDate() + 5);
+        
+        var tzOffset = today.getTimezoneOffset() * 60000;
+        var todayLocalISOTime = (new Date(today - tzOffset)).toISOString().split('T')[0];
+        var maxLocalISOTime = (new Date(maxDate - tzOffset)).toISOString().split('T')[0];
+
+        dateInput.setAttribute("min", todayLocalISOTime);
+        dateInput.setAttribute("max", maxLocalISOTime);
+        dateInput.value = todayLocalISOTime;
+    }
+
+    // Update min/max time based on date and duration
+    function updateTimeBounds() {
+        if (!timeInput || !dateInput) return;
+
+        var now = new Date();
+        var selectedDate = dateInput.value;
+        var tzOffset = now.getTimezoneOffset() * 60000;
+        var todayStr = (new Date(now - tzOffset)).toISOString().split('T')[0];
+        var isToday = (selectedDate === todayStr);
+
+        // Set min time: current time if today, 8:00 AM if future
+        if (isToday) {
+            var currentHour = now.getHours();
+            var currentMin = now.getMinutes();
+            var minTime = (currentHour < 10 ? '0' : '') + currentHour + ':' + (currentMin < 10 ? '0' : '') + currentMin;
+            // Don't go below 8:00 AM
+            if (currentHour < 8) minTime = '08:00';
+            timeInput.setAttribute('min', minTime);
+        } else {
+            timeInput.setAttribute('min', '08:00');
+        }
+
+        // Set max time based on duration
+        var duration = 1;
+        durationRadios.forEach(function(r) { if (r.checked) duration = parseInt(r.value); });
+        var maxHour = 16 - duration; // 4 PM is 16:00
+        var maxTime = (maxHour < 10 ? '0' : '') + maxHour + ':00';
+        timeInput.setAttribute('max', maxTime);
+
+        // Clear time if it's now invalid
+        if (timeInput.value && timeInput.value < timeInput.getAttribute('min')) {
+            timeInput.value = '';
+        }
+    }
+
+    if (dateInput) dateInput.addEventListener('change', updateTimeBounds);
+    durationRadios.forEach(function(r) { r.addEventListener('change', updateTimeBounds); });
+    updateTimeBounds();
+    // Refresh min time every minute for today
+    setInterval(function() { updateTimeBounds(); }, 60000);
+
+    // Form submit validation & time format conversion
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            if (!timeInput || !timeInput.value) return;
+
+            var duration = 1;
+            durationRadios.forEach(function(r) { if (r.checked) duration = parseInt(r.value); });
+            var timeParts = timeInput.value.split(':');
+            var hours = parseInt(timeParts[0]);
+            var mins = parseInt(timeParts[1]);
+            var totalMins = hours * 60 + mins;
+
+            if (totalMins < 480) {
+                e.preventDefault();
+                alert('Out time must be after 8:00 AM (college hours).');
+                return;
+            }
+            if (totalMins + (duration * 60) > 960) { // 960 mins = 16:00 = 4 PM
+                var maxHour = 16 - duration;
+                var maxAmPm = maxHour >= 12 ? 'PM' : 'AM';
+                var maxDisp = (maxHour > 12 ? maxHour - 12 : maxHour) + ':00 ' + maxAmPm;
+                e.preventDefault();
+                alert('With ' + duration + ' hour(s) duration, out time cannot be later than ' + maxDisp + ' (must return by 4:00 PM).');
+                return;
+            }
+
+            var selectedDate = dateInput ? dateInput.value : '';
+            var now = new Date();
+            var tzOffset = now.getTimezoneOffset() * 60000;
+            var todayStr = (new Date(now - tzOffset)).toISOString().split('T')[0];
+            
+            if (selectedDate === todayStr) {
+                var currentTotalMins = now.getHours() * 60 + now.getMinutes();
+                if (totalMins < currentTotalMins) {
+                    e.preventDefault();
+                    alert('For today, you cannot select a past time.');
+                    return;
+                }
+            }
+
+            // Convert 24h to 12h format for display in slot - done SERVER SIDE NOW
+        });
+    }
+})();
+
+// ===== RETURN REMINDER POLLING =====
+(function() {
+    var banner = document.getElementById("reminderBanner");
+    var countdownEl = document.getElementById("reminderCountdown");
+    var deadlineEl = document.getElementById("reminderDeadline");
+    if (!banner) return;
+
+    var reminderDeadlineTime = null;
+    var reminderActive = false;
+
+    function updateReminderCountdown() {
+        if (!reminderActive || !reminderDeadlineTime) return;
+        var now = new Date().getTime();
+        var diff = reminderDeadlineTime - now;
+        if (diff <= 0) {
+            countdownEl.textContent = "⚠ DEADLINE PASSED!";
+            return;
+        }
+        var mins = Math.floor(diff / (1000 * 60));
+        var secs = Math.floor((diff % (1000 * 60)) / 1000);
+        countdownEl.textContent = "⏰ " + mins + "m " + secs + "s remaining";
+    }
+
+    function checkReminder() {
+        fetch("/api/check_reminder")
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (data.reminder) {
+                    banner.style.display = "block";
+                    reminderActive = true;
+                    // Parse the deadline for live countdown
+                    // deadline_full format: "04 May 2026, 10:30 PM"
+                    deadlineEl.textContent = "Deadline: " + data.deadline_full;
+                    // Use minutes_left from server to estimate deadline timestamp
+                    reminderDeadlineTime = new Date().getTime() + (data.minutes_left * 60 * 1000);
+                    updateReminderCountdown();
+                } else {
+                    banner.style.display = "none";
+                    reminderActive = false;
+                }
+            })
+            .catch(function(err) {
+                console.log("Reminder check failed:", err);
+            });
+    }
+
+    // Initial check
+    checkReminder();
+    // Poll every 15 seconds
+    setInterval(checkReminder, 15000);
+    // Update countdown every second
+    setInterval(updateReminderCountdown, 1000);
+})();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Principal Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body{
+margin:0;
+font-family:'Segoe UI';
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(135deg,#0f4c81,#1e6bb8,#ff8c00);
+background-size:300% 300%;
+animation:gradientMove 10s ease infinite;
+}
+
+@keyframes gradientMove{
+0%{background-position:0% 50%;}
+50%{background-position:100% 50%;}
+100%{background-position:0% 50%;}
+}
+
+.outer{
+padding:20px;
+border-radius:30px;
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(10px);
+}
+
+.card{
+width:370px;
+background:linear-gradient(135deg,#ff8c00,#cc7000);
+padding:35px;
+border-radius:25px;
+text-align:center;
+box-shadow:0 20px 40px rgba(255,140,0,0.3);
+animation:float 4s ease-in-out infinite;
+}
+
+@keyframes float{
+0%{transform:translateY(0)}
+50%{transform:translateY(-10px)}
+100%{transform:translateY(0)}
+}
+
+h2{
+color:white;
+margin-bottom:8px;
+letter-spacing:2px;
+font-size:22px;
+}
+
+.subtitle{
+color:rgba(255,255,255,0.8);
+font-size:13px;
+margin-bottom:25px;
+}
+
+input{
+width:90%;
+padding:13px;
+margin:8px 0;
+border:none;
+border-radius:20px;
+outline:none;
+font-size:14px;
+background:rgba(255,255,255,0.95);
+}
+
+input:focus{
+box-shadow:0 0 0 3px rgba(255,255,255,0.3);
+}
+
+.password-wrapper{
+position:relative;
+width:100%;
+display:flex;
+justify-content:center;
+}
+
+.password-wrapper input{
+width:90%;
+padding-right:40px;
+}
+
+.toggle-password{
+position:absolute;
+right:calc(5% + 10px);
+top:50%;
+transform:translateY(-50%);
+cursor:pointer;
+font-size:18px;
+color:#666;
+background:none;
+border:none;
+padding:0;
+margin:0;
+line-height:1;
+user-select:none;
+transition:color 0.2s;
+}
+
+.toggle-password:hover{
+color:#333;
+}
+
+button{
+margin-top:18px;
+padding:12px 30px;
+border:none;
+border-radius:20px;
+background:white;
+color:#ff8c00;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+transition:0.3s;
+}
+
+button:hover{
+transform:scale(1.05);
+box-shadow:0 8px 20px rgba(0,0,0,0.2);
+}
+
+a{
+display:block;
+margin-top:12px;
+color:rgba(255,255,255,0.85);
+text-decoration:none;
+font-size:13px;
+}
+
+a:hover{
+color:white;
+text-decoration:underline;
+}
+
+.error{
+color:#ffeb3b;
+font-size:13px;
+margin-top:8px;
+}
+</style>
+</head>
+<body>
+<div class="outer">
+<div class="card">
+<h2>👑 PRINCIPAL LOGIN</h2>
+<p class="subtitle">Management Portal</p>
+<form method="POST">
+<input type="email" name="email" placeholder="Enter Principal Email" required>
+<div class="password-wrapper">
+<input type="password" id="passwordField" name="password" placeholder="Enter Password" required>
+<span class="toggle-password" onclick="togglePassword()">👁️</span>
+</div>
+<button type="submit">Login</button>
+</form>
+{% if error %}
+<p class="error">{{error}}</p>
+{% endif %}
+<a href="/principal_forgot_password">Forgot Password?</a>
+</div>
+</div>
+<script>
+function togglePassword(){
+var f=document.getElementById('passwordField');
+var t=document.querySelector('.toggle-password');
+if(f.type==='password'){f.type='text';t.textContent='🙈';}
+else{f.type='password';t.textContent='👁️';}
+}
+</script>
+</body>
+</html>

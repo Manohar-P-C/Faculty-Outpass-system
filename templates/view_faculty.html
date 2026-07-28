@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ page_title }}</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter', sans-serif;
+}
+
+body{
+background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);
+min-height:100vh;
+color:#e0e0e0;
+}
+
+/* TOP NAV */
+.topbar{
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:15px 30px;
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(20px);
+border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.topbar-left{
+display:flex;
+align-items:center;
+gap:15px;
+}
+
+.topbar-left .logo{
+font-size:22px;
+font-weight:700;
+background:linear-gradient(135deg,#667eea,#764ba2);
+-webkit-background-clip:text;
+background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.topbar-left .role-badge{
+background:linear-gradient(135deg,#667eea,#764ba2);
+color:white;
+padding:4px 14px;
+border-radius:20px;
+font-size:12px;
+font-weight:600;
+}
+
+.topbar-right{
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.back-btn, .logout-btn{
+padding:8px 18px;
+border:none;
+border-radius:10px;
+font-size:13px;
+font-weight:600;
+cursor:pointer;
+transition:all 0.3s ease;
+text-decoration:none;
+display:inline-block;
+}
+
+.back-btn{
+background:rgba(255,255,255,0.1);
+color:white;
+border:1px solid rgba(255,255,255,0.15);
+}
+.back-btn:hover{ background:rgba(255,255,255,0.2); }
+
+.logout-btn{
+background:linear-gradient(135deg,#e74c3c,#c0392b);
+color:white;
+}
+.logout-btn:hover{ transform:scale(1.03); }
+
+/* CONTENT AREA */
+.content{
+max-width:1200px;
+margin:0 auto;
+padding:30px;
+}
+
+/* PAGE HEADER */
+.page-header{
+display:flex;
+align-items:center;
+justify-content:space-between;
+margin-bottom:30px;
+}
+
+.page-header h1{
+font-size:28px;
+font-weight:700;
+color:white;
+}
+
+.page-header h1 span{
+font-size:14px;
+font-weight:400;
+color:rgba(255,255,255,0.5);
+display:block;
+margin-top:4px;
+}
+
+/* TABS */
+.tabs{
+display:flex;
+gap:8px;
+margin-bottom:30px;
+background:rgba(255,255,255,0.05);
+padding:6px;
+border-radius:14px;
+overflow-x:auto;
+}
+
+.tab{
+padding:10px 22px;
+border-radius:10px;
+font-size:14px;
+font-weight:500;
+cursor:pointer;
+transition:all 0.3s;
+text-decoration:none;
+color:rgba(255,255,255,0.6);
+white-space:nowrap;
+}
+
+.tab:hover{ color:white; background:rgba(255,255,255,0.08); }
+.tab.active{
+background:linear-gradient(135deg,#667eea,#764ba2);
+color:white;
+box-shadow:0 4px 15px rgba(102,126,234,0.4);
+}
+
+/* DEPT FILTER FORM */
+.filter-form {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.filter-form select {
+    padding: 10px 15px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    color: white;
+    outline: none;
+    cursor: pointer;
+}
+.filter-form select option {
+    background: #1a1a2e;
+    color: white;
+}
+
+/* TABLE */
+.table-container{
+background:rgba(255,255,255,0.06);
+backdrop-filter:blur(10px);
+border:1px solid rgba(255,255,255,0.08);
+border-radius:16px;
+overflow:hidden;
+}
+
+.table-header{
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:20px 25px;
+border-bottom:1px solid rgba(255,255,255,0.08);
+}
+
+.table-header h3{
+font-size:16px;
+font-weight:600;
+color:white;
+}
+
+.search-box{
+padding:8px 16px;
+background:rgba(255,255,255,0.08);
+border:1px solid rgba(255,255,255,0.12);
+border-radius:10px;
+color:white;
+font-size:13px;
+outline:none;
+min-width:200px;
+}
+
+.search-box::placeholder{
+color:rgba(255,255,255,0.3);
+}
+
+.search-box:focus{
+border-color:#667eea;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+thead{
+background:rgba(255,255,255,0.04);
+}
+
+th{
+padding:14px 20px;
+text-align:left;
+font-size:12px;
+font-weight:600;
+text-transform:uppercase;
+letter-spacing:0.5px;
+color:rgba(255,255,255,0.45);
+}
+
+td{
+padding:16px 20px;
+font-size:14px;
+border-top:1px solid rgba(255,255,255,0.04);
+}
+
+tr:hover td{
+background:rgba(255,255,255,0.03);
+}
+
+.dept-tag{
+display:inline-block;
+padding:3px 12px;
+border-radius:20px;
+font-size:12px;
+font-weight:600;
+}
+
+.dept-cse{ background:rgba(52,152,219,0.2); color:#3498db; }
+.dept-ai{ background:rgba(155,89,182,0.2); color:#9b59b6; }
+.dept-ise{ background:rgba(46,204,113,0.2); color:#2ecc71; }
+.dept-ece{ background:rgba(231,76,60,0.2); color:#e74c3c; }
+.dept-civil{ background:rgba(241,196,15,0.2); color:#f1c40f; }
+.dept-mech{ background:rgba(230,126,34,0.2); color:#e67e22; }
+.dept-maths{ background:rgba(26,188,156,0.2); color:#1abc9c; }
+.dept-physics{ background:rgba(52,73,94,0.2); color:#7f8c8d; }
+.dept-chem{ background:rgba(142,68,173,0.2); color:#8e44ad; }
+.dept-mba{ background:rgba(22,160,133,0.2); color:#16a085; }
+
+/* EMPTY STATE */
+.empty-state{
+text-align:center;
+padding:60px 20px;
+color:rgba(255,255,255,0.4);
+}
+
+.empty-state .icon{
+font-size:48px;
+margin-bottom:15px;
+display:block;
+}
+
+.empty-state p{
+font-size:16px;
+}
+
+/* RESPONSIVE */
+@media (max-width:768px){
+.content{ padding:15px; }
+.page-header{ flex-direction:column; gap:15px; }
+.table-container{ overflow-x:auto; }
+table{ min-width:600px; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+    <div class="topbar-left">
+        <div class="logo">SVIT Admin</div>
+        <span class="role-badge">{{ manager_role }}</span>
+    </div>
+    <div class="topbar-right">
+        <a href="{{ back_url }}" class="back-btn">← Back to Dashboard</a>
+        <a href="/logout" class="logout-btn">Logout</a>
+    </div>
+</div>
+
+<!-- CONTENT -->
+<div class="content">
+
+    <!-- PAGE HEADER -->
+    <div class="page-header">
+        <h1>
+            {{ page_title }}
+            <span>View Faculty accounts</span>
+        </h1>
+    </div>
+
+    <!-- TABS -->
+    {% if manager_role == 'Principal' %}
+    <div class="tabs">
+        <a href="/manage/hods" class="tab">🎓 HODs</a>
+        <a href="#" class="tab active">👨‍🏫 Faculty</a>
+        <a href="/manage/security" class="tab">🔒 Security</a>
+    </div>
+    {% endif %}
+
+    <!-- DEPT FILTER -->
+    <form class="filter-form" method="GET" action="/view_faculty">
+        <label>Filter by Department:</label>
+        <select name="department" onchange="this.form.submit()">
+            <option value="" disabled>Select Department</option>
+            {% for d in departments %}
+            <option value="{{ d }}" {% if department == d %}selected{% endif %}>{{ d }}</option>
+            {% endfor %}
+        </select>
+    </form>
+
+    <!-- USER TABLE -->
+    <div class="table-container">
+        <div class="table-header">
+            <h3>📋 {{ department }} Faculty ({{ users|length }})</h3>
+            <input type="text" class="search-box" placeholder="Search..." id="searchInput" onkeyup="filterTable()">
+        </div>
+
+        {% if users|length > 0 %}
+        <table id="usersTable">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Photo</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Department</th>
+                    <th>Phone</th>
+                    <th>Designation</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>
+                        {% if user.photo %}
+                        <img src="/static/uploads/{{ user.photo }}" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
+                        {% else %}
+                        <div style="width:40px; height:40px; border-radius:50%; background:rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center; font-size:12px;">No Pic</div>
+                        {% endif %}
+                    </td>
+                    <td><b>{{ user.name }}</b></td>
+                    <td>{{ user.email }}</td>
+                    <td><span class="dept-tag dept-{{ user.department|lower }}">{{ user.department }}</span></td>
+                    <td>{{ user.phone or '—' }}</td>
+                    <td>{{ user.designation or '—' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-state">
+            <span class="icon">📭</span>
+            <p>No faculty found for {{ department }}.</p>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+
+<script>
+function filterTable(){
+    var input = document.getElementById('searchInput').value.toLowerCase();
+    var table = document.getElementById('usersTable');
+    if(!table) return;
+    var rows = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+    for(var i = 0; i < rows.length; i++){
+        var text = rows[i].textContent.toLowerCase();
+        rows[i].style.display = text.indexOf(input) > -1 ? '' : 'none';
+    }
+}
+</script>
+
+</body>
+</html>
