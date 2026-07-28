@@ -360,9 +360,11 @@ def verify_pw(stored_hash, password):
     """Verify a password against its hash.
     Supports both hashed and legacy plain-text passwords for
     backward compatibility with existing database records."""
-    if stored_hash and stored_hash.startswith(('pbkdf2:', 'scrypt:')):
+    if not stored_hash or not password:
+        return False
+    if isinstance(stored_hash, str) and stored_hash.startswith(('pbkdf2:', 'scrypt:')):
         return check_password_hash(stored_hash, password)
-    return stored_hash == password  # Legacy plain-text fallback
+    return str(stored_hash) == str(password)
 
 
 # Email config — uses environment variables (no hardcoded fallbacks for security)
@@ -781,8 +783,8 @@ def home():
 
 @app.route("/principal_login", methods=["GET", "POST"])
 def principal_login():
-    # If already logged in, go to dashboard
-    if session.get("principal"):
+    # If already logged in on GET request, go to dashboard
+    if request.method == "GET" and session.get("principal"):
         return redirect("/principal_dashboard")
 
     if request.method == "POST":
@@ -846,8 +848,8 @@ def principal_verify_otp():
 
 @app.route("/security_login", methods=["GET", "POST"])
 def security_login():
-    # If already logged in, go to dashboard
-    if session.get("security"):
+    # If already logged in on GET request, go to dashboard
+    if request.method == "GET" and session.get("security"):
         return redirect("/security_dashboard")
 
     if request.method == "POST":
@@ -911,8 +913,8 @@ def security_verify_otp():
 
 @app.route("/faculty_login", methods=["GET","POST"])
 def faculty_login():
-    # If already logged in, go to dashboard
-    if session.get("faculty_email"):
+    # If already logged in on GET request, go to dashboard
+    if request.method == "GET" and session.get("faculty_email"):
         return redirect("/faculty_dashboard")
 
     if request.method == "POST":
@@ -941,8 +943,8 @@ def faculty_login():
 
 @app.route("/hod_login", methods=["GET", "POST"])
 def hod_login():
-    # If already logged in, go to dashboard
-    if session.get("hod"):
+    # If already logged in on GET request, go to dashboard
+    if request.method == "GET" and session.get("hod"):
         return redirect("/hod_dashboard")
 
     if request.method == "POST":
