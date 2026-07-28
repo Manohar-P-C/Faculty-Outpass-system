@@ -45,29 +45,45 @@ def save_photo(req_files, field_name="photo"):
             return filename
     return None
 
+if os.environ.get("VERCEL"):
+    UPLOAD_FOLDER = "/tmp"
+else:
+    UPLOAD_FOLDER = os.path.join(app.root_path, "static", "uploads")
+    try:
+        os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+    except Exception:
+        UPLOAD_FOLDER = "/tmp"
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 # -----------------------
 # MYSQL DATABASE CONFIG
 # -----------------------
-DB_HOST = os.environ.get("DB_HOST", "localhost")
-DB_USER = os.environ.get("DB_USER", "root")
-DB_PASSWORD = os.environ.get("DB_PASSWORD", "manohar2129")
-DB_NAME = os.environ.get("DB_NAME", "college_db")
-DB_PORT = int(os.environ.get("DB_PORT", 3306))
-DB_SSL = os.environ.get("DB_SSL", "false").lower() in ("true", "1", "required")
-
 def get_db():
-    """Get a MySQL database connection."""
+    """Get a MySQL database connection dynamically from environment variables."""
+    host = os.environ.get("DB_HOST", "localhost")
+    user = os.environ.get("DB_USER", "root")
+    password = os.environ.get("DB_PASSWORD", "manohar2129")
+    name = os.environ.get("DB_NAME", "college_db")
+    port = int(os.environ.get("DB_PORT", 3306))
+    ssl_val = str(os.environ.get("DB_SSL", "false")).lower()
+    ssl_enabled = ssl_val in ("true", "1", "required")
+
     config = {
-        'host': DB_HOST,
-        'user': DB_USER,
-        'password': DB_PASSWORD,
-        'database': DB_NAME,
-        'port': DB_PORT,
+        'host': host,
+        'user': user,
+        'password': password,
+        'database': name,
+        'port': port,
     }
-    if DB_SSL:
+    if ssl_enabled:
         config['ssl_disabled'] = False
         config['ssl_verify_cert'] = False
     return mysql.connector.connect(**config)
+
+@app.errorhandler(500)
+def internal_error(e):
+    import traceback
+    return f"<h2>500 Internal Server Error</h2><pre>{traceback.format_exc()}</pre>", 500
 
 # -----------------------
 # DB HELPER FUNCTIONS
