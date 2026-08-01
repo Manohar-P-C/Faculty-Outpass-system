@@ -774,6 +774,15 @@ def home():
         return redirect("/faculty_dashboard")
     if session.get("security"):
         return redirect("/security_dashboard")
+
+    # Show intro video on first visit; skip if already seen this session
+    # or if redirected back after intro completes (?skip_intro=1)
+    if request.args.get("skip_intro") == "1":
+        session["intro_seen"] = True
+
+    if not session.get("intro_seen"):
+        return render_template("intro.html")
+
     return render_template("main.html")
 
 
