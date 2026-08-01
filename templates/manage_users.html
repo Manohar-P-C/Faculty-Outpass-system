@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{{ page_title }} - User Management</title>
+<title>{{ page_title }} – User Management | SVIT Outpass System</title>
+<meta name="description" content="Manage faculty, HOD, and security user accounts in the SVIT Faculty Outpass Monitoring System.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0f0c29">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 
@@ -498,13 +501,35 @@ font-size:16px;
 }
 
 /* RESPONSIVE */
-@media (max-width:768px){
-.content{ padding:15px; }
-.page-header{ flex-direction:column; gap:15px; }
-.form-grid{ grid-template-columns:1fr; }
-.table-container{ overflow-x:auto; }
-table{ min-width:600px; }
-.tabs{ flex-wrap:wrap; }
+@media (max-width:600px){
+ .content{ padding:12px 10px; }
+ .topbar{ padding:10px 14px; }
+ .topbar-left .logo{ font-size:17px; }
+ .topbar-right{ gap:6px; }
+ .back-btn,.logout-btn{ padding:7px 12px; font-size:12px; }
+ .page-header{ flex-direction:column; gap:10px; }
+ .page-header h1{ font-size:20px; }
+ .form-grid{ grid-template-columns:1fr; }
+ .table-container{ overflow-x:auto; -webkit-overflow-scrolling:touch; }
+ table{ min-width:560px; }
+ .stats-row{ grid-template-columns:1fr 1fr; gap:12px; }
+ .tabs{ flex-wrap:nowrap; overflow-x:auto; padding-bottom:4px; }
+ .tab{ font-size:13px; padding:8px 14px; }
+ .add-form{ padding:18px 14px; }
+ .modal{ padding:20px; }
+ .form-actions{ flex-direction:column; }
+ .btn-primary,.btn-secondary{ width:100%; }
+ .table-header{ flex-direction:column; gap:10px; align-items:flex-start; }
+ .search-box{ width:100%; min-width:unset; }
+ .actions{ flex-wrap:wrap; }
+ button{ min-height:44px; }
+}
+@media (min-width:601px) and (max-width:1024px){
+ .content{ padding:20px; }
+ .topbar{ padding:12px 20px; }
+ .stats-row{ grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); }
+ .form-grid{ grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); }
+ .table-container{ overflow-x:auto; }
 }
 
 </style>

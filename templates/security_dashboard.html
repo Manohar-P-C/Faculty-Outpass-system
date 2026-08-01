@@ -1,8 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Security Dashboard</title>
+<meta charset="UTF-8">
+<title>Security Dashboard – Faculty Exit Monitoring</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Security guard QR scanner dashboard to monitor faculty exit and entry at SVIT college gates.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0f4c81">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -102,13 +106,18 @@ body{
     gap:20px;
 }
 @media(max-width:1000px){
-    .main-grid{grid-template-columns:1fr;}
+    .main-grid{grid-template-columns:1fr 1fr;}
 }
 @media(max-width:600px){
-    body{padding:12px;}
-    .top-bar{flex-direction:column;gap:10px;align-items:flex-start;}
-    .top-bar h1{font-size:18px;}
-    .scanner-tab{padding:12px 10px;font-size:13px;}
+    body{padding:10px;}
+    .top-bar{flex-direction:column;gap:8px;align-items:flex-start;}
+    .top-bar h1{font-size:17px;}
+    .top-bar-actions{width:100%;display:flex;gap:8px;}
+    .top-bar-actions .btn{flex:1;text-align:center;justify-content:center;padding:9px 10px;font-size:12px;min-height:40px;}
+    .scanner-tab{padding:11px 8px;font-size:12px;}
+    .main-grid{grid-template-columns:1fr;}
+    .btn{min-height:44px;}
+    .scanner-mode-label{font-size:13px;}
 }
 
 /* Cards */

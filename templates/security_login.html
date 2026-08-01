@@ -1,8 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Security Login</title>
+<meta charset="UTF-8">
+<title>Security Login – SVIT Gate Access</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Security guard login portal for SVIT campus gate. Scan QR codes and monitor faculty exit and return.">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#2e9e58">
 <style>
 body{
 margin:0;
@@ -138,9 +142,24 @@ text-decoration:underline;
 }
 
 .error{
-color:#ffeb3b;
-font-size:13px;
-margin-top:8px;
+    color:#ffeb3b;
+    font-size:13px;
+    margin-top:8px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:480px){
+    body{padding:10px;align-items:center;}
+    .outer{padding:12px;border-radius:20px;width:100%;max-width:400px;box-sizing:border-box;}
+    .card{width:100%;padding:24px 18px;border-radius:18px;}
+    input{width:95%;font-size:15px;padding:12px;}
+    .password-wrapper input{width:95%;}
+    .toggle-password{right:calc(2.5% + 10px);}
+    button{min-width:140px;min-height:44px;}
+    h2{font-size:19px;}
+}
+@media(min-width:481px) and (max-width:768px){
+    .card{width:340px;}
 }
 </style>
 </head>
