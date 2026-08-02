@@ -211,6 +211,36 @@ def db_get_all_requests():
         })
     return results
 
+def db_get_departments():
+    """Fetch all departments from database, falling back to default list if query fails."""
+    default_depts = [
+        {"id": 1, "code": "CSE", "name": "Computer Science & Engineering", "icon": "💻"},
+        {"id": 2, "code": "AI", "name": "Artificial Intelligence & Machine Learning", "icon": "🤖"},
+        {"id": 3, "code": "ISE", "name": "Information Science & Engineering", "icon": "🖥️"},
+        {"id": 4, "code": "ECE", "name": "Electronics & Communication Engineering", "icon": "📡"},
+        {"id": 5, "code": "CIVIL", "name": "Civil Engineering", "icon": "🏗️"},
+        {"id": 6, "code": "MECH", "name": "Mechanical Engineering", "icon": "⚙️"},
+        {"id": 7, "code": "MATHS", "name": "Mathematics", "icon": "📐"},
+        {"id": 8, "code": "PHYSICS", "name": "Physics", "icon": "🔬"},
+        {"id": 9, "code": "CHEM", "name": "Chemistry", "icon": "⚗️"},
+        {"id": 10, "code": "MBA", "name": "Master of Business Administration", "icon": "📊"},
+        {"id": 11, "code": "CSDS", "name": "Computer Science & Data Science", "icon": "💾"},
+        {"id": 12, "code": "CSCY", "name": "Computer Science & Cyber Security", "icon": "🛡️"},
+        {"id": 13, "code": "CSBS", "name": "Computer Science & Business Studies", "icon": "💼"}
+    ]
+    try:
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM departments ORDER BY code ASC")
+        rows = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        if rows:
+            return rows
+    except Exception as e:
+        print(f"[DB DEPT ERROR] {e}")
+    return default_depts
+
 def is_pass_expired(req):
     """Check if an approved request's QR pass is expired (more than 1 day past its approved deadline/timing)."""
     if not req or req.get("status") != "Approved":
@@ -732,13 +762,18 @@ def auto_reset_scheduler():
         _time.sleep(60)  # Check every 60 seconds
 
 
-# Start the reminder scheduler in a daemon thread
+# Start the background schedulers in daemon threads
 # Guard against Flask debug reloader spawning duplicate threads
 if os.environ.get("WERKZEUG_RUN_MAIN") == "true" or not app.debug:
     _reminder_thread = threading.Thread(target=reminder_scheduler, daemon=True)
     _reminder_thread.start()
     _auto_reset_thread = threading.Thread(target=auto_reset_scheduler, daemon=True)
     _auto_reset_thread.start()
+    try:
+        from escalation_scheduler import start_escalation_scheduler
+        start_escalation_scheduler()
+    except Exception as _sch_err:
+        print(f"[SCHEDULER-INIT-ERROR] Could not start AI escalation scheduler: {_sch_err}")
 
 # -----------------------
 # ERROR HANDLERS
@@ -1896,6 +1931,152 @@ def delete_principal(pid):
 
 
 # -----------------------
+# DEPARTMENT MANAGEMENT ROUTES
+# -----------------------
+
+@app.route("/manage_departments")
+def manage_departments():
+    if not session.get("principal"):
+        return redirect("/principal_login")
+
+    departments = db_get_departments()
+
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+        for dept in departments:
+            code = dept["code"]
+            cursor.execute("SELECT COUNT(*) FROM hods WHERE department = %s", (code,))
+            dept["hod_count"] = cursor.fetchone()[0]
+            cursor.execute("SELECT COUNT(*) FROM faculty WHERE department = %s", (code,))
+            dept["faculty_count"] = cursor.fetchone()[0]
+        cursor.close()
+        conn.close()
+    except Exception as e:
+        print(f"[MANAGE DEPTS COUNT ERROR] {e}")
+
+    return render_template(
+        "manage_departments.html",
+        departments=departments,
+        message=request.args.get("msg"),
+        message_type=request.args.get("mt", "success")
+    )
+
+
+@app.route("/add_department", methods=["POST"])
+def add_department():
+    if not session.get("principal"):
+        return redirect("/principal_login")
+
+    code = request.form.get("code", "").strip().upper()
+    name = request.form.get("name", "").strip()
+    icon = request.form.get("icon", "🏫").strip() or "🏫"
+
+    if not code or not name:
+        return redirect("/manage_departments?msg=Department+Code+and+Name+are+required&mt=error")
+
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+        cursor.execute("SELECT id FROM departments WHERE code = %s", (code,))
+        if cursor.fetchone():
+            cursor.close()
+            conn.close()
+            return redirect(f"/manage_departments?msg=Department+code+'{code}'+already+exists&mt=error")
+
+        cursor.execute("INSERT INTO departments (code, name, icon) VALUES (%s, %s, %s)", (code, name, icon))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return redirect(f"/manage_departments?msg=Department+'{code}'+added+successfully&mt=success")
+    except Exception as e:
+        return redirect(f"/manage_departments?msg=Error:+{e}&mt=error")
+
+
+@app.route("/edit_department", methods=["POST"])
+def edit_department():
+    if not session.get("principal"):
+        return redirect("/principal_login")
+
+    dept_id = request.form.get("id")
+    new_code = request.form.get("code", "").strip().upper()
+    new_name = request.form.get("name", "").strip()
+    new_icon = request.form.get("icon", "🏫").strip() or "🏫"
+
+    if not dept_id or not new_code or not new_name:
+        return redirect("/manage_departments?msg=Invalid+department+data&mt=error")
+
+    try:
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT code FROM departments WHERE id = %s", (dept_id,))
+        old_dept = cursor.fetchone()
+
+        if not old_dept:
+            cursor.close()
+            conn.close()
+            return redirect("/manage_departments?msg=Department+not+found&mt=error")
+
+        old_code = old_dept["code"]
+
+        if new_code != old_code:
+            cursor.execute("SELECT id FROM departments WHERE code = %s AND id != %s", (new_code, dept_id))
+            if cursor.fetchone():
+                cursor.close()
+                conn.close()
+                return redirect(f"/manage_departments?msg=Code+'{new_code}'+is+already+in+use&mt=error")
+
+            cursor.execute("UPDATE hods SET department = %s WHERE department = %s", (new_code, old_code))
+            cursor.execute("UPDATE faculty SET department = %s WHERE department = %s", (new_code, old_code))
+            cursor.execute("UPDATE faculty_requests SET department = %s WHERE department = %s", (new_code, old_code))
+
+        cursor.execute("UPDATE departments SET code = %s, name = %s, icon = %s WHERE id = %s", (new_code, new_name, new_icon, dept_id))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return redirect(f"/manage_departments?msg=Department+'{new_code}'+updated+successfully&mt=success")
+    except Exception as e:
+        return redirect(f"/manage_departments?msg=Error:+{e}&mt=error")
+
+
+@app.route("/delete_department/<int:dept_id>")
+def delete_department(dept_id):
+    if not session.get("principal"):
+        return redirect("/principal_login")
+
+    try:
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT code FROM departments WHERE id = %s", (dept_id,))
+        dept = cursor.fetchone()
+
+        if not dept:
+            cursor.close()
+            conn.close()
+            return redirect("/manage_departments?msg=Department+not+found&mt=error")
+
+        code = dept["code"]
+
+        cursor.execute("SELECT COUNT(*) as count FROM hods WHERE department = %s", (code,))
+        hod_count = cursor.fetchone()["count"]
+        cursor.execute("SELECT COUNT(*) as count FROM faculty WHERE department = %s", (code,))
+        faculty_count = cursor.fetchone()["count"]
+
+        if hod_count > 0 or faculty_count > 0:
+            cursor.close()
+            conn.close()
+            return redirect(f"/manage_departments?msg=Cannot+delete+'{code}':+{hod_count}+HOD(s)+and+{faculty_count}+faculty+member(s)+are+assigned+to+it&mt=error")
+
+        cursor.execute("DELETE FROM departments WHERE id = %s", (dept_id,))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return redirect(f"/manage_departments?msg=Department+'{code}'+deleted+successfully&mt=success")
+    except Exception as e:
+        return redirect(f"/manage_departments?msg=Error:+{e}&mt=error")
+
+
+# -----------------------
 # USER MANAGEMENT ROUTES
 # -----------------------
 
@@ -1935,7 +2116,7 @@ def manage_users(user_type):
         edit_url=f"/edit_user/{user_type}",
         delete_url=f"/delete_user/{user_type}",
         message=flash_get_msg(), # custom helper
-        departments=["CSE", "AI", "ISE", "ECE", "CIVIL", "MECH", "MATHS", "PHYSICS", "CHEM", "MBA", "CSDS"]
+        departments=[d["code"] for d in db_get_departments()]
     )
 
 def flash_get_msg():
@@ -2270,7 +2451,7 @@ def manage_faculty():
         users=users, show_department=True,
         add_url="/manage/faculty/add", edit_url="/manage/faculty/edit", delete_url="/manage/faculty/delete",
         manager_role="Principal", back_url="/principal_dashboard",
-        departments=["CSE","AI","ISE","ECE","CIVIL","MECH","MATHS","PHYSICS","CHEM","MBA","CSDS"],
+        departments=["CSE","AI","ISE","ECE","CIVIL","MECH","MATHS","PHYSICS","CHEM","MBA","CSDS","CSCY","CSBS"],
         message=request.args.get("msg"), message_type=request.args.get("mt","success"))
 
 @app.route("/manage/faculty/add", methods=["POST"])
@@ -2348,7 +2529,7 @@ def view_faculty():
         page_title=f"Faculty - {dept} Department",
         users=users, department=dept,
         manager_role="Principal", back_url="/principal_dashboard",
-        departments=["CSE","AI","ISE","ECE","CIVIL","MECH","MATHS","PHYSICS","CHEM","MBA","CSDS"])
+        departments=["CSE","AI","ISE","ECE","CIVIL","MECH","MATHS","PHYSICS","CHEM","MBA","CSDS","CSCY","CSBS"])
 
 
 # --- PRINCIPAL: Manage Security ---
@@ -2778,5 +2959,260 @@ def api_check_reminder():
     return jsonify({"reminder": False})
 
 
+# -----------------------
+# TWILIO AI VOICE CALL & ASSISTANT API ROUTES
+# -----------------------
+
+@app.route("/api/twilio/voice-webhook", methods=['GET', 'POST'])
+def twilio_voice_webhook():
+    """TwiML Webhook called by Twilio when the HOD Assistant answers the AI call."""
+    request_id = request.args.get("request_id") or request.form.get("request_id")
+    
+    faculty_name = "a faculty member"
+    department = "your department"
+    assistant_name = "HOD Assistant"
+    hod_name = "the HOD"
+    pending_minutes = 15
+
+    if request_id:
+        try:
+            conn = get_db()
+            cursor = conn.cursor(dictionary=True)
+            cursor.execute("""
+                SELECT r.faculty_name, r.department, r.created_at, TIMESTAMPDIFF(MINUTE, r.created_at, NOW()) as pending_mins,
+                       h.name as hod_name, h.assistant_name
+                FROM faculty_requests r
+                LEFT JOIN hods h ON r.department = h.department
+                WHERE r.request_id = %s
+            """, (request_id,))
+            req_data = cursor.fetchone()
+            cursor.close()
+            conn.close()
+
+            if req_data:
+                faculty_name = req_data.get("faculty_name") or faculty_name
+                department = req_data.get("department") or department
+                hod_name = req_data.get("hod_name") or hod_name
+                assistant_name = req_data.get("assistant_name") or assistant_name
+                pending_minutes = req_data.get("pending_mins") or pending_minutes
+        except Exception as e:
+            print(f"[TWIML WEBHOOK ERROR] {e}")
+
+    # Build TwiML response
+    twiml_response = f"""<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Gather action="/api/twilio/handle-key?request_id={request_id or ''}" numDigits="1" timeout="10">
+        <Say voice="Polly.Aditi" language="en-IN">
+            Attention {assistant_name}. This is an urgent alert from SVIT Faculty Exit System.
+            Faculty member {faculty_name} from {department} department submitted an exit outpass request {pending_minutes} minutes ago, which is still pending approval.
+            Please inform HOD {hod_name} to review and approve the request on the portal immediately.
+            Press 1 to confirm you have received this notification, or press 2 to dispatch an urgent SMS alert.
+        </Say>
+    </Gather>
+    <Say voice="Polly.Aditi" language="en-IN">
+        We did not receive any key press. Please inform HOD {hod_name} as soon as possible. Goodbye.
+    </Say>
+</Response>"""
+
+    return (twiml_response, 200, {'Content-Type': 'text/xml'})
+
+
+@app.route("/api/twilio/handle-key", methods=['GET', 'POST'])
+def twilio_handle_key():
+    """Handles DTMF keypad entry from the HOD Assistant (Press 1 or 2)."""
+    digits = request.form.get("Digits") or request.args.get("Digits")
+    request_id = request.args.get("request_id") or request.form.get("request_id")
+
+    if digits == "1":
+        message = "Thank you. Your acknowledgment has been recorded in the system. Goodbye."
+        new_status = "Acknowledged by Assistant"
+    elif digits == "2":
+        message = "Urgent SMS alert has been dispatched to the HOD. Thank you. Goodbye."
+        new_status = "SMS Alert Requested"
+    else:
+        message = "Thank you for your response. Goodbye."
+        new_status = "Call Answered"
+
+    if request_id:
+        try:
+            conn = get_db()
+            cursor = conn.cursor()
+            cursor.execute("""
+                UPDATE faculty_requests SET ai_call_status = %s WHERE request_id = %s
+            """, (new_status, request_id))
+            cursor.execute("""
+                UPDATE ai_call_logs SET call_status = %s WHERE request_id = %s ORDER BY id DESC LIMIT 1
+            """, (new_status, request_id))
+            conn.commit()
+            cursor.close()
+            conn.close()
+        except Exception as e:
+            print(f"[TWIML KEY ERROR] {e}")
+
+    twiml_response = f"""<?xml version="1.0" encoding="UTF-8"?>
+<Response>
+    <Say voice="Polly.Aditi" language="en-IN">{message}</Say>
+</Response>"""
+
+    return (twiml_response, 200, {'Content-Type': 'text/xml'})
+
+
+@app.route("/api/twilio/call-status", methods=['GET', 'POST'])
+def twilio_call_status():
+    """Asynchronous callback endpoint to receive Twilio call status events."""
+    call_sid = request.form.get("CallSid") or request.args.get("CallSid")
+    call_status = request.form.get("CallStatus") or request.args.get("CallStatus")
+    duration = request.form.get("CallDuration") or 0
+
+    if call_sid:
+        try:
+            conn = get_db()
+            cursor = conn.cursor()
+            cursor.execute("""
+                UPDATE ai_call_logs 
+                SET call_status = %s, duration_seconds = %s 
+                WHERE call_sid = %s
+            """, (call_status, int(duration), call_sid))
+            
+            cursor.execute("""
+                UPDATE faculty_requests 
+                SET ai_call_status = %s 
+                WHERE ai_call_sid = %s
+            """, (call_status, call_sid))
+            
+            conn.commit()
+            cursor.close()
+            conn.close()
+            print(f"[TWILIO STATUS CALLBACK] CallSid: {call_sid} -> Status: {call_status} ({duration}s)")
+        except Exception as e:
+            print(f"[TWILIO STATUS CALLBACK ERROR] {e}")
+
+    return jsonify({"status": "received"})
+
+
+@app.route("/api/update_hod_assistant", methods=['POST'])
+def api_update_hod_assistant():
+    """API endpoint for Principal to assign/update HOD Assistant Name, Phone & Escalation Timeout."""
+    if not session.get("principal"):
+        return jsonify({"success": False, "error": "Unauthorized"}), 401
+
+    data = request.get_json() or request.form
+    department = data.get("department")
+    assistant_name = data.get("assistant_name", "").strip()
+    assistant_phone = data.get("assistant_phone", "").strip()
+    escalation_timeout_mins = int(data.get("escalation_timeout_mins", 15))
+    ai_call_enabled = 1 if str(data.get("ai_call_enabled", "1")).lower() in ("true", "1", "on") else 0
+
+    if not department:
+        return jsonify({"success": False, "error": "Department code is required"}), 400
+
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+        cursor.execute("""
+            UPDATE hods 
+            SET assistant_name = %s, assistant_phone = %s, escalation_timeout_mins = %s, ai_call_enabled = %s
+            WHERE department = %s
+        """, (assistant_name, assistant_phone, escalation_timeout_mins, ai_call_enabled, department))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return jsonify({"success": True, "message": f"Updated HOD Assistant settings for department {department}."})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route("/api/ai_call_logs", methods=['GET'])
+def api_get_ai_call_logs():
+    """Fetch recent AI Call Logs for Principal and HOD dashboards."""
+    if not (session.get("principal") or session.get("hod_email")):
+        return jsonify({"success": False, "error": "Unauthorized"}), 401
+
+    dept_filter = None
+    if session.get("hod_email"):
+        # Restrict to HOD's own department
+        hod_user = db_get_user("hods", session["hod_email"])
+        if hod_user:
+            dept_filter = hod_user.get("department")
+
+    try:
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+        query = "SELECT * FROM ai_call_logs"
+        params = []
+        if dept_filter:
+            query += " WHERE department = %s"
+            params.append(dept_filter)
+        query += " ORDER BY created_at DESC LIMIT 50"
+
+        cursor.execute(query, params)
+        logs = cursor.fetchall()
+        cursor.close()
+        conn.close()
+
+        # Format dates for JSON
+        formatted_logs = []
+        for log in logs:
+            formatted_logs.append({
+                "id": log["id"],
+                "request_id": log["request_id"],
+                "department": log["department"],
+                "faculty_name": log["faculty_name"],
+                "assistant_name": log["assistant_name"],
+                "assistant_phone": log["assistant_phone"],
+                "call_sid": log["call_sid"],
+                "call_status": log["call_status"],
+                "duration_seconds": log["duration_seconds"],
+                "created_at": log["created_at"].strftime("%d %b %Y, %I:%M %p") if log["created_at"] else ""
+            })
+        return jsonify({"success": True, "logs": formatted_logs})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+@app.route("/api/test_ai_call/<request_id>", methods=['POST'])
+def api_test_ai_call(request_id):
+    """Manual trigger to test dispatching an AI Voice Call for a specific request."""
+    if not (session.get("principal") or session.get("hod_email")):
+        return jsonify({"success": False, "error": "Unauthorized"}), 401
+
+    try:
+        conn = get_db()
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("""
+            SELECT r.request_id, r.faculty_name, r.department, r.created_at,
+                   TIMESTAMPDIFF(MINUTE, r.created_at, NOW()) as pending_mins,
+                   h.assistant_name, h.assistant_phone
+            FROM faculty_requests r
+            LEFT JOIN hods h ON r.department = h.department
+            WHERE r.request_id = %s
+        """, (request_id,))
+        req = cursor.fetchone()
+        cursor.close()
+        conn.close()
+
+        if not req:
+            return jsonify({"success": False, "error": "Request not found"}), 404
+
+        assistant_phone = req.get("assistant_phone")
+        if not assistant_phone:
+            return jsonify({"success": False, "error": f"No HOD Assistant phone number set for department {req['department']}. Please configure Assistant details first."}), 400
+
+        from twilio_service import trigger_ai_escalation_call
+        success, message_or_sid = trigger_ai_escalation_call(
+            request_id=req["request_id"],
+            faculty_name=req["faculty_name"],
+            department=req["department"],
+            assistant_name=req.get("assistant_name") or "HOD Assistant",
+            assistant_phone=assistant_phone,
+            pending_minutes=req.get("pending_mins") or 10
+        )
+
+        return jsonify({"success": success, "sid_or_error": message_or_sid})
+
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True)

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manage Departments - SVIT</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+body {
+    margin: 0;
+    font-family: 'Inter', Segoe UI, sans-serif;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    min-height: 100vh;
+    color: #333;
+}
+
+.header {
+    color: white;
+    padding: 20px 40px;
+    font-size: 24px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.back-btn {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.back-btn:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 30px 20px 40px;
+}
+
+.template-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    margin-bottom: 25px;
+    overflow: hidden;
+}
+
+.card-header {
+    background: linear-gradient(135deg, #2a5298, #1e3c72);
+    color: white;
+    padding: 18px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-header h3 {
+    margin: 0;
+    font-size: 17px;
+}
+
+.card-body {
+    padding: 25px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 15px;
+    align-items: end;
+}
+
+@media (max-width: 600px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #444;
+    font-size: 13px;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 10px 14px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: 0.3s;
+    box-sizing: border-box;
+}
+
+input:focus {
+    border-color: #2a5298;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(42,82,152,0.15);
+}
+
+.btn-row {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.save-btn {
+    background: linear-gradient(135deg, #27ae60, #219a52);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.save-btn:hover {
+    background: linear-gradient(135deg, #219a52, #1a7a3f);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(39,174,96,0.3);
+}
+
+.edit-btn {
+    background: #2980b9;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    text-decoration: none;
+    margin-right: 4px;
+}
+
+.edit-btn:hover {
+    background: #1f618d;
+}
+
+.delete-btn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+    text-decoration: none;
+}
+
+.delete-btn:hover {
+    background: #c0392b;
+}
+
+.req-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.req-table th {
+    background: #f4f6f9;
+    color: #333;
+    padding: 12px 14px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.req-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #f0f0f0;
+    color: #333;
+    vertical-align: middle;
+}
+
+.req-table tr:hover td {
+    background: #f8f9ff;
+}
+
+.dept-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 12px;
+    background: rgba(42,82,152,0.1);
+    color: #2a5298;
+}
+
+.message {
+    padding: 14px 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    font-size: 14px;
+    animation: fadeIn 0.3s;
+}
+
+.message.success {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.message.error {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* Modal */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    padding: 30px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    animation: fadeIn 0.3s ease;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #1e3c72;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #999;
+}
+
+.close-modal:hover {
+    color: #333;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <span>🏫 Manage Academic Departments</span>
+    <a href="/principal_dashboard" class="back-btn">← Back to Dashboard</a>
+</div>
+
+<div class="container">
+
+{% if message %}
+<div class="message {{ message_type }}">{{ message }}</div>
+{% endif %}
+
+<!-- Add New Department -->
+<div class="template-card">
+    <div class="card-header">
+        <h3>➕ Add New Department</h3>
+    </div>
+    <div class="card-body">
+        <form action="/add_department" method="POST">
+            <div class="form-grid">
+                <div>
+                    <label>Department Code</label>
+                    <input type="text" name="code" placeholder="e.g., CSDS, ROBOTICS" required style="text-transform:uppercase;">
+                </div>
+                <div>
+                    <label>Full Department Name</label>
+                    <input type="text" name="name" placeholder="e.g., Computer Science & Data Science" required>
+                </div>
+                <div>
+                    <label>Icon (Emoji)</label>
+                    <input type="text" name="icon" placeholder="e.g., 💻, 🤖, 🛡️" value="🏫" required>
+                </div>
+            </div>
+            <div class="btn-row">
+                <button type="submit" class="save-btn">✨ Create Department</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Departments List Table -->
+<div class="template-card">
+    <div class="card-header">
+        <h3>📋 Active Academic Departments ({{ departments|length }})</h3>
+    </div>
+    <div class="card-body" style="padding:0;">
+        <table class="req-table">
+            <thead>
+                <tr>
+                    <th style="width:60px;">Icon</th>
+                    <th>Code</th>
+                    <th>Full Department Name</th>
+                    <th>Assigned HODs</th>
+                    <th>Faculty Count</th>
+                    <th style="text-align:right;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for dept in departments %}
+                <tr>
+                    <td style="font-size:20px; text-align:center;">{{ dept.icon }}</td>
+                    <td><span class="dept-badge">{{ dept.code }}</span></td>
+                    <td><b>{{ dept.name }}</b></td>
+                    <td><span style="font-size:12px; font-weight:bold; color:#555;">{{ dept.hod_count or 0 }} HOD(s)</span></td>
+                    <td><span style="font-size:12px; font-weight:bold; color:#555;">{{ dept.faculty_count or 0 }} Member(s)</span></td>
+                    <td style="text-align:right;">
+                        <button class="edit-btn" data-id="{{ dept.id }}" data-code="{{ dept.code }}" data-name="{{ dept.name }}" data-icon="{{ dept.icon }}" onclick="openEditModalFromBtn(this)">✏️ Edit</button>
+                        <a href="/delete_department/{{ dept.id }}" class="delete-btn" onclick="return confirm('Are you sure you want to delete the {{ dept.code }} department?')">🗑️ Delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</div>
+
+<!-- Edit Department Modal -->
+<div class="modal-overlay" id="editModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>✏️ Edit Department</h3>
+            <button class="close-modal" onclick="closeEditModal()">&times;</button>
+        </div>
+        <form action="/edit_department" method="POST">
+            <input type="hidden" name="id" id="edit_id">
+            
+            <label style="margin-top:0;">Department Code</label>
+            <input type="text" name="code" id="edit_code" required style="text-transform:uppercase; margin-bottom:15px;">
+            
+            <label>Full Department Name</label>
+            <input type="text" name="name" id="edit_name" required style="margin-bottom:15px;">
+            
+            <label>Icon Emoji</label>
+            <input type="text" name="icon" id="edit_icon" required style="margin-bottom:20px;">
+            
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button type="button" class="back-btn" style="background:#888; color:white;" onclick="closeEditModal()">Cancel</button>
+                <button type="submit" class="save-btn">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openEditModalFromBtn(btn) {
+    document.getElementById('edit_id').value = btn.getAttribute('data-id');
+    document.getElementById('edit_code').value = btn.getAttribute('data-code');
+    document.getElementById('edit_name').value = btn.getAttribute('data-name');
+    document.getElementById('edit_icon').value = btn.getAttribute('data-icon');
+    document.getElementById('editModal').style.display = 'flex';
+}
+
+function openEditModal(id, code, name, icon) {
+    document.getElementById('edit_id').value = id;
+    document.getElementById('edit_code').value = code;
+    document.getElementById('edit_name').value = name;
+    document.getElementById('edit_icon').value = icon;
+    document.getElementById('editModal').style.display = 'flex';
+}
+
+function closeEditModal() {
+    document.getElementById('editModal').style.display = 'none';
+}
+
+window.onclick = function(event) {
+    var modal = document.getElementById('editModal');
+    if (event.target == modal) {
+        closeEditModal();
+    }
+}
+</script>
+
+</body>
+</html>

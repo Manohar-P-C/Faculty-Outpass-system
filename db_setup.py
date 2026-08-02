@@ -214,6 +214,20 @@ def create_tables():
         """)
         print("[OK] Table 'late_warnings' created.")
 
+        # -----------------------
+        # DEPARTMENTS TABLE
+        # -----------------------
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS departments (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                code VARCHAR(20) NOT NULL UNIQUE,
+                name VARCHAR(100) NOT NULL,
+                icon VARCHAR(10) DEFAULT '🏫',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
+        print("[OK] Table 'departments' created.")
+
         conn.commit()
         cursor.close()
         conn.close()
@@ -258,12 +272,15 @@ def seed_default_data():
                 ("HOD PHYSICS", "hod.physics@svit.edu", hod_pw, "PHYSICS", ""),
                 ("HOD CHEM", "hod.chem@svit.edu", hod_pw, "CHEM", ""),
                 ("HOD MBA", "hod.mba@svit.edu", hod_pw, "MBA", ""),
+                ("HOD CSDS", "hod.csds@svit.edu", hod_pw, "CSDS", ""),
+                ("HOD CSCY", "hod.cscy@svit.edu", hod_pw, "CSCY", ""),
+                ("HOD CSBS", "hod.csbs@svit.edu", hod_pw, "CSBS", ""),
             ]
             cursor.executemany("""
                 INSERT INTO hods (name, email, password, department, phone)
                 VALUES (%s, %s, %s, %s, %s)
             """, hods)
-            print("[OK] Default HOD accounts added (10 departments).")
+            print("[OK] Default HOD accounts added (13 departments).")
 
         # -----------------------
         # SEED SECURITY
@@ -339,6 +356,32 @@ def seed_default_data():
                 VALUES (%s, %s, %s, %s, %s, %s)
             """, templates)
             print("[OK] Default email templates added (5 templates).")
+
+        # -----------------------
+        # SEED DEPARTMENTS
+        # -----------------------
+        cursor.execute("SELECT COUNT(*) FROM departments")
+        if cursor.fetchone()[0] == 0:
+            default_depts = [
+                ("CSE", "Computer Science & Engineering", "💻"),
+                ("AI", "Artificial Intelligence & Machine Learning", "🤖"),
+                ("ISE", "Information Science & Engineering", "🖥️"),
+                ("ECE", "Electronics & Communication Engineering", "📡"),
+                ("CIVIL", "Civil Engineering", "🏗️"),
+                ("MECH", "Mechanical Engineering", "⚙️"),
+                ("MATHS", "Mathematics", "📐"),
+                ("PHYSICS", "Physics", "🔬"),
+                ("CHEM", "Chemistry", "⚗️"),
+                ("MBA", "Master of Business Administration", "📊"),
+                ("CSDS", "Computer Science & Data Science", "💾"),
+                ("CSCY", "Computer Science & Cyber Security", "🛡️"),
+                ("CSBS", "Computer Science & Business Studies", "💼")
+            ]
+            cursor.executemany("""
+                INSERT INTO departments (code, name, icon)
+                VALUES (%s, %s, %s)
+            """, default_depts)
+            print("[OK] Default departments seeded (13 departments).")
 
         conn.commit()
         cursor.close()

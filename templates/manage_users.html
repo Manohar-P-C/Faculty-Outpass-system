@@ -629,17 +629,9 @@ font-size:16px;
                     <label>Department</label>
                     <select name="department" required>
                         <option value="">Select Department</option>
-                        <option value="CSE">CSE</option>
-                        <option value="AI">AI</option>
-                        <option value="ISE">ISE</option>
-                        <option value="ECE">ECE</option>
-                        <option value="CIVIL">CIVIL</option>
-                        <option value="MECH">MECH</option>
-                        <option value="MATHS">MATHS</option>
-                        <option value="PHYSICS">PHYSICS</option>
-                        <option value="CHEM">CHEM</option>
-                        <option value="MBA">MBA</option>
-                        <option value="CSDS">CSDS</option>
+                        {% for d in departments %}
+                        <option value="{{ d.code if d.code else d }}">{{ d.code if d.code else d }}</option>
+                        {% endfor %}
                     </select>
                 </div>
                 {% endif %}
@@ -761,17 +753,9 @@ font-size:16px;
             <div class="form-group">
                 <label>Department</label>
                 <select name="department" id="edit_department" required>
-                    <option value="CSE">CSE</option>
-                    <option value="AI">AI</option>
-                    <option value="ISE">ISE</option>
-                    <option value="ECE">ECE</option>
-                    <option value="CIVIL">CIVIL</option>
-                    <option value="MECH">MECH</option>
-                    <option value="MATHS">MATHS</option>
-                    <option value="PHYSICS">PHYSICS</option>
-                    <option value="CHEM">CHEM</option>
-                    <option value="MBA">MBA</option>
-                    <option value="CSDS">CSDS</option>
+                    {% for d in departments %}
+                    <option value="{{ d.code if d.code else d }}">{{ d.code if d.code else d }}</option>
+                    {% endfor %}
                 </select>
             </div>
             {% endif %}

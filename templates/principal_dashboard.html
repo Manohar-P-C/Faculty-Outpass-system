@@ -662,21 +662,30 @@ Security Connected
 <h3 style="font-size:14px; margin-bottom:10px;">⚙️ User Management</h3>
 <a href="/manage_principals" style="display:block; color:white; text-decoration:none; padding:8px 12px; background:rgba(255,255,255,0.1); border-radius:8px; margin-bottom:6px; font-size:13px; transition:0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">👑 Manage Principals</a>
 <a href="/manage/hods" style="display:block; color:white; text-decoration:none; padding:8px 12px; background:rgba(255,255,255,0.1); border-radius:8px; margin-bottom:6px; font-size:13px; transition:0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">🎓 Manage HODs</a>
+<a href="/manage_departments" style="display:block; color:white; text-decoration:none; padding:8px 12px; background:rgba(255,255,255,0.1); border-radius:8px; margin-bottom:6px; font-size:13px; transition:0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">🏫 Manage Departments</a>
 
 <form action="/view_faculty" method="GET" style="margin-bottom:6px;">
     <select name="department" onchange="this.form.submit()" style="width:100%; padding:8px 12px; background:rgba(255,255,255,0.1); border:1px solid transparent; border-radius:8px; color:white; font-size:13px; cursor:pointer; outline:none;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
         <option value="" disabled selected>👨‍🏫 View Faculty by Dept</option>
-        <option value="CSE" style="color:black;">CSE</option>
-        <option value="AI" style="color:black;">AI</option>
-        <option value="ISE" style="color:black;">ISE</option>
-        <option value="ECE" style="color:black;">ECE</option>
-        <option value="CIVIL" style="color:black;">CIVIL</option>
-        <option value="MECH" style="color:black;">MECH</option>
-        <option value="MATHS" style="color:black;">MATHS</option>
-        <option value="PHYSICS" style="color:black;">PHYSICS</option>
-        <option value="CHEM" style="color:black;">CHEM</option>
-        <option value="MBA" style="color:black;">MBA</option>
-        <option value="CSDS" style="color:black;">CSDS</option>
+        {% if departments %}
+            {% for d in departments %}
+            <option value="{{ d.code if d.code else d }}" style="color:black;">{{ d.code if d.code else d }}</option>
+            {% endfor %}
+        {% else %}
+            <option value="CSE" style="color:black;">CSE</option>
+            <option value="AI" style="color:black;">AI</option>
+            <option value="ISE" style="color:black;">ISE</option>
+            <option value="ECE" style="color:black;">ECE</option>
+            <option value="CIVIL" style="color:black;">CIVIL</option>
+            <option value="MECH" style="color:black;">MECH</option>
+            <option value="MATHS" style="color:black;">MATHS</option>
+            <option value="PHYSICS" style="color:black;">PHYSICS</option>
+            <option value="CHEM" style="color:black;">CHEM</option>
+            <option value="MBA" style="color:black;">MBA</option>
+            <option value="CSDS" style="color:black;">CSDS</option>
+            <option value="CSCY" style="color:black;">CSCY</option>
+            <option value="CSBS" style="color:black;">CSBS</option>
+        {% endif %}
     </select>
 </form>
 

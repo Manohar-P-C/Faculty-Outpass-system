@@ -192,38 +192,51 @@ box-shadow:0 20px 40px rgba(236,72,153,0.4);
 
 <div class="grid" id="grid">
 
-<input type="radio" name="department" value="CSE" id="d1" required>
-<label for="d1" class="dept">💻 Computer Science</label>
+{% if departments %}
+  {% for d in departments %}
+  <input type="radio" name="department" value="{{ d.code if d.code else d }}" id="d{{ loop.index }}" {% if loop.first %}required{% endif %}>
+  <label for="d{{ loop.index }}" class="dept">{{ d.icon if d.icon else '🏫' }} {{ d.name if d.name else d }} ({{ d.code if d.code else d }})</label>
+  {% endfor %}
+{% else %}
+  <input type="radio" name="department" value="CSE" id="d1" required>
+  <label for="d1" class="dept">💻 Computer Science</label>
 
-<input type="radio" name="department" value="AI" id="d2">
-<label for="d2" class="dept">🤖 AI & ML</label>
+  <input type="radio" name="department" value="AI" id="d2">
+  <label for="d2" class="dept">🤖 AI & ML</label>
 
-<input type="radio" name="department" value="ISE" id="d3">
-<label for="d3" class="dept">🖥 Information Science</label>
+  <input type="radio" name="department" value="ISE" id="d3">
+  <label for="d3" class="dept">🖥 Information Science</label>
 
-<input type="radio" name="department" value="ECE" id="d4">
-<label for="d4" class="dept">📡 Electronics</label>
+  <input type="radio" name="department" value="ECE" id="d4">
+  <label for="d4" class="dept">📡 Electronics</label>
 
-<input type="radio" name="department" value="CIVIL" id="d5">
-<label for="d5" class="dept">🏗 Civil</label>
+  <input type="radio" name="department" value="CIVIL" id="d5">
+  <label for="d5" class="dept">🏗 Civil</label>
 
-<input type="radio" name="department" value="MECH" id="d6">
-<label for="d6" class="dept">⚙ Mechanical</label>
+  <input type="radio" name="department" value="MECH" id="d6">
+  <label for="d6" class="dept">⚙ Mechanical</label>
 
-<input type="radio" name="department" value="MATHS" id="d7">
-<label for="d7" class="dept">📐 Mathematics</label>
+  <input type="radio" name="department" value="MATHS" id="d7">
+  <label for="d7" class="dept">📐 Mathematics</label>
 
-<input type="radio" name="department" value="PHYSICS" id="d8">
-<label for="d8" class="dept">🔬 Physics</label>
+  <input type="radio" name="department" value="PHYSICS" id="d8">
+  <label for="d8" class="dept">🔬 Physics</label>
 
-<input type="radio" name="department" value="CHEM" id="d9">
-<label for="d9" class="dept">⚗ Chemistry</label>
+  <input type="radio" name="department" value="CHEM" id="d9">
+  <label for="d9" class="dept">⚗ Chemistry</label>
 
-<input type="radio" name="department" value="MBA" id="d10" required>
-<label for="d10" class="dept">📊 MBA</label>
+  <input type="radio" name="department" value="MBA" id="d10">
+  <label for="d10" class="dept">📊 MBA</label>
 
-<input type="radio" name="department" value="CSDS" id="d11">
-<label for="d11" class="dept">💾 CSDS</label>
+  <input type="radio" name="department" value="CSDS" id="d11">
+  <label for="d11" class="dept">💾 CSDS</label>
+
+  <input type="radio" name="department" value="CSCY" id="d12">
+  <label for="d12" class="dept">🛡️ CSCY (Cyber Security)</label>
+
+  <input type="radio" name="department" value="CSBS" id="d13">
+  <label for="d13" class="dept">💼 CSBS (Business Studies)</label>
+{% endif %}
 
 </div>
 
