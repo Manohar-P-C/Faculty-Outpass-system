@@ -5,5 +5,3 @@ werkzeug
 qrcode[pil]
 python-dotenv
 pillow
-twilio
-APScheduler
