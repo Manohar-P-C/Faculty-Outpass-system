@@ -4,3 +4,12 @@ __pycache__/
 static/uploads/*
 !static/uploads/.gitkeep
 *.zip
+
+# One-time database setup & migration scripts (contain local credentials)
+add_*.py
+remove_*.py
+reset_*.py
+migrate_*.py
+db_setup.py
+check_smtp_db.py
+debug_smtp.py

@@ -65,7 +65,7 @@ def get_db():
     """Get a MySQL database connection dynamically from environment variables."""
     host = os.environ.get("DB_HOST", "localhost")
     user = os.environ.get("DB_USER", "root")
-    password = os.environ.get("DB_PASSWORD", "manohar2129")
+    password = os.environ.get("DB_PASSWORD", "")
     name = os.environ.get("DB_NAME", "college_db")
     port = int(os.environ.get("DB_PORT", 3306))
     ssl_val = str(os.environ.get("DB_SSL", "false")).lower()
